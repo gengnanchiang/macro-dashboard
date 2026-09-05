@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep  4 11:03:44 2026
+Created on Sat Sep  5 13:39:45 2026
 
 @author: jnchi
 """
@@ -21,10 +21,8 @@ st.set_page_config(
     layout="wide"
 )
 
-# -------------------------------------------------------------
-# 請在此填入您的 FRED API Key (若未填寫，美國數據將提供模擬基準以防破版)
-# -------------------------------------------------------------
-FRED_API_KEY = "c719e812897da6b9a38539161dbd9d4a"
+# 優先讀取 Streamlit Secrets，若未設定則使用預設常數
+FRED_API_KEY = st.secrets.get("FRED_API_KEY", "YOUR_FRED_API_KEY")
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -57,7 +55,6 @@ def parse_tw_date(date_str):
 def fetch_fred_series(series_id, api_key, limit=24):
     """自 FRED 官方 API 抓取美國時間序列數據"""
     if not api_key or api_key == "YOUR_FRED_API_KEY":
-        # 示範/備用時間序列
         dates = pd.date_range(end=datetime.today(), periods=limit, freq="ME")
         dummy_df = pd.DataFrame({
             "日期": dates.strftime("%Y-%m-%d"),
@@ -165,8 +162,22 @@ def calculate_score_and_light(score):
 # 4. 前端儀表板渲染
 # ==========================================
 def main():
-    st.title("🌐 美國 vs 台灣 總體經濟即時監測儀表板")
-    st.caption(f"監測節點時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (CST)")
+    # 頂部控制列：標題、更新按鈕與時間戳記
+    header_col1, header_col2 = st.columns([4, 1])
+
+    with header_col1:
+        st.title("🌐 美國 vs 台灣 總體經濟即時監測儀表板")
+        st.caption(f"數據最後更新時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (CST)")
+
+    with header_col2:
+        st.write("")  # 垂直對齊留白
+        # 立即更新按鈕：清除所有快取並重新載入頁面
+        if st.button("🔄 立即更新數據", use_container_width=True, type="primary"):
+            st.cache_data.clear()
+            st.toast("已清除快取，正在重新檢索官方最新數據...", icon="🔄")
+            st.rerun()
+
+    st.divider()
 
     us_meta = [
         {"name": "實質 GDP 季增年率 (Real GDP)", "code": "A191RL1Q225SBEA", "unit": "%", "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA"},
@@ -293,19 +304,5 @@ def main():
 
     st.divider()
 
-# ==========================================
-# 5. IDE 執行防護 (解決 missing ScriptRunContext 警告)
-# ==========================================
 if __name__ == "__main__":
-    from streamlit.web import cli as stcli
-    try:
-        from streamlit.runtime.scriptrunner import get_script_run_ctx
-        ctx = get_script_run_ctx()
-    except Exception:
-        ctx = None
-
-    if ctx is None:
-        sys.argv = ["streamlit", "run", sys.argv[0]]
-        sys.exit(stcli.main())
-    else:
-        main()
+    main()
