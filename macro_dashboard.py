@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Sep  7 20:34:06 2026
+Created on Wed Oct  7 23:21:50 2026
 
 @author: jnchi
 """
@@ -9,6 +9,7 @@ import sys
 import requests
 import pandas as pd
 import streamlit as st
+import plotly.graph_objects as go
 import plotly.express as px
 from datetime import datetime
 
@@ -21,8 +22,11 @@ st.set_page_config(
     layout="wide"
 )
 
-# 優先讀取 Streamlit Secrets，若未設定則使用預設常數
-FRED_API_KEY = st.secrets.get("FRED_API_KEY", "03ff533806d1f33a86bcdbe948d9abf7")
+# 安全讀取 secrets，本機找不到檔案時自動使用預設 API Key
+try:
+    FRED_API_KEY = st.secrets["FRED_API_KEY"]
+except Exception:
+    FRED_API_KEY = "03ff533806d1f33a86bcdbe948d9abf7"
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -34,23 +38,20 @@ HEADERS = {
 def format_period_label(date_str, freq="monthly"):
     """
     將各類日期格式統一轉換為標準統計期標籤：
-    - freq='quarterly': 轉為 YYYY Q1 ~ Q4 (比照美國實質 GDP 格式)
+    - freq='quarterly': 轉為 YYYY Q1 ~ Q4
     - freq='monthly': 轉為 YYYY-MM
-    支援輸入格式包含: 'YYYY-MM-DD', '113M06', '113/06', '113年06月', '2026Q2' 等
     """
     if not date_str or date_str in ["-", "即時查詢"]:
         return date_str
         
     date_str = str(date_str).strip()
     
-    # 處理已是 2026Q2 或 2026 Q2 格式
     if "Q" in date_str or "q" in date_str:
         clean_q = date_str.upper().replace(" ", "")
         if len(clean_q) >= 6:
             return f"{clean_q[:4]} {clean_q[4:]}"
         return date_str
 
-    # 處理台灣民國年月 (如 113M06, 113/06, 113-06, 113年6月)
     for sep in ['M', '/', '年', '-']:
         if sep in date_str:
             parts = date_str.replace('月', '').replace('日', '').split(sep)
@@ -59,7 +60,6 @@ def format_period_label(date_str, freq="monthly"):
                     year, month = int(parts[0]), int(parts[1])
                     if year < 1911:
                         year += 1911
-                    
                     if freq == "quarterly":
                         quarter = (month - 1) // 3 + 1
                         return f"{year} Q{quarter}"
@@ -67,7 +67,6 @@ def format_period_label(date_str, freq="monthly"):
                 except ValueError:
                     pass
 
-    # 處理標準西元 'YYYY-MM-DD'
     try:
         dt = datetime.strptime(date_str[:10], "%Y-%m-%d")
         if freq == "quarterly":
@@ -78,25 +77,14 @@ def format_period_label(date_str, freq="monthly"):
         return date_str
 
 # ==========================================
-# 2. 數據獲取模組 (含快取機制與標準期別處理)
+# 2. 數據獲取模組 (含快取機制)
 # ==========================================
 
 @st.cache_data(ttl=1800)
 def fetch_fred_series(series_id, api_key, freq="monthly", limit=24):
-    """
-    自 FRED 官方 API 抓取美國時間序列數據
-    回傳: (最新數值, 統計期標籤, 歷史 DataFrame)
-    """
-    if not api_key or api_key == "YOUR_FRED_API_KEY":
-        # 示範/備用時間序列
-        dates = pd.date_range(end=datetime.today(), periods=limit, freq="QE" if freq == "quarterly" else "ME")
-        dummy_df = pd.DataFrame({
-            "日期": [format_period_label(d.strftime("%Y-%m-%d"), freq=freq) for d in dates],
-            "數值": [2.5 + (i * 0.05) for i in range(limit)]
-        })
-        latest_val = dummy_df["數值"].iloc[-1]
-        latest_period = dummy_df["日期"].iloc[-1]
-        return latest_val, latest_period, dummy_df
+    """自 FRED 官方 API 抓取美國時間序列數據"""
+    if not api_key:
+        return None, None, pd.DataFrame()
 
     url = (
         f"https://api.stlouisfed.org/fred/series/observations"
@@ -113,7 +101,6 @@ def fetch_fred_series(series_id, api_key, freq="monthly", limit=24):
         df = df[df["value"] != "."]
         df["value"] = pd.to_numeric(df["value"])
         
-        # 轉換為標準期別標籤 (例如 2026-04-01 -> 2026 Q2)
         df["統計期"] = df["date"].apply(lambda d: format_period_label(d, freq=freq))
         df.rename(columns={"value": "數值"}, inplace=True)
         df.sort_values("date", inplace=True)
@@ -127,7 +114,7 @@ def fetch_fred_series(series_id, api_key, freq="monthly", limit=24):
 
 @st.cache_data(ttl=1800)
 def fetch_ndc_indicators(limit=15):
-    """抓取國發會景氣對策信號數據 (月度指標)"""
+    """抓取國發會景氣對策信號數據"""
     api_url = "https://ws.ndc.gov.tw/Download.ashx?u=LzAwMS9hZG1pbmlzdHJhdG9yLzEwL3BkZl8xMDkvYnVzaW5lc3NfaW5kaWNhdG9ycy5qc29u&n=YnVzaW5lc3NfaW5kaWNhdG9ycy5qc29u"
     try:
         res = requests.get(api_url, headers=HEADERS, timeout=8)
@@ -159,7 +146,7 @@ def fetch_ndc_indicators(limit=15):
 
 @st.cache_data(ttl=1800)
 def fetch_dgbas_cpi(limit=15):
-    """抓取主計總處 CPI 變動率數據 (月度指標)"""
+    """抓取主計總處 CPI 變動率數據"""
     stat_url = "https://apiservice.mol.gov.tw/OdService/rest/datastore/A17000000J-030018-bV2"
     try:
         res = requests.get(stat_url, headers=HEADERS, timeout=8)
@@ -185,20 +172,131 @@ def fetch_dgbas_cpi(limit=15):
     return demo_df["統計期"].iloc[-1], float(demo_df["CPI_YoY"].iloc[-1]), demo_df
 
 # ==========================================
-# 3. 評分與燈號判定
+# 3. 核心演算法：依即時客觀數據動態計算評分
 # ==========================================
-def calculate_score_and_light(score):
-    mapping = {
-        5: {"light": "🟢 綠燈", "status": "強勁擴張 (景氣繁榮，供需與就業熱絡)"},
-        4: {"light": "🟡 綠黃燈", "status": "穩健成長 (景氣擴張，多數指標向好)"},
-        3: {"light": "🟠 黃燈", "status": "中性轉折 (成長趨緩，處於政策與利率觀望期)"},
-        2: {"light": "🟠 黃藍燈", "status": "景氣放緩 (緊縮環境下總合需求轉弱)"},
-        1: {"light": "🔴 藍燈", "status": "低迷衰退 (景氣收縮，總體指標普遍疲弱)"}
-    }
-    return mapping.get(score, mapping[3])
+
+def calculate_us_score(gdp, unrate, cpi, fedfunds):
+    """根據美國實質最新數據計算 1~5 分"""
+    # 預設各給予中性分值以防單項遺漏
+    s_gdp, s_unrate, s_cpi, s_rate = 3, 3, 3, 3
+
+    if gdp is not None:
+        if gdp >= 3.0: s_gdp = 5
+        elif gdp >= 2.0: s_gdp = 4
+        elif gdp >= 1.0: s_gdp = 3
+        elif gdp >= 0.0: s_gdp = 2
+        else: s_gdp = 1
+
+    if unrate is not None:
+        if unrate <= 3.8: s_unrate = 5
+        elif unrate <= 4.2: s_unrate = 4
+        elif unrate <= 4.6: s_unrate = 3
+        elif unrate <= 5.2: s_unrate = 2
+        else: s_unrate = 1
+
+    if cpi is not None:
+        dev = abs(cpi - 2.0)
+        if dev <= 0.5: s_cpi = 5
+        elif dev <= 1.2: s_cpi = 4
+        elif dev <= 2.0: s_cpi = 3
+        elif dev <= 3.5: s_cpi = 2
+        else: s_cpi = 1
+
+    if fedfunds is not None and cpi is not None:
+        real_r = fedfunds - cpi
+        if 0.5 <= real_r <= 1.5: s_rate = 5
+        elif (1.6 <= real_r <= 2.5) or (0.0 <= real_r < 0.5): s_rate = 4
+        elif (-0.5 <= real_r < 0.0) or (2.6 <= real_r <= 3.2): s_rate = 3
+        elif real_r > 3.2: s_rate = 2
+        else: s_rate = 1
+
+    final_score = (s_gdp + s_unrate + s_cpi + s_rate) / 4.0
+    return round(final_score, 1)
+
+
+def calculate_tw_score(ndc_score, cpi, gdp=3.1):
+    """根據台灣實質最新數據計算 1~5 分"""
+    s_ndc, s_cpi, s_gdp = 3, 3, 3
+
+    if ndc_score is not None:
+        if ndc_score >= 38: s_ndc = 5       # 紅燈
+        elif ndc_score >= 32: s_ndc = 4     # 黃紅燈
+        elif ndc_score >= 23: s_ndc = 3     # 綠燈
+        elif ndc_score >= 17: s_ndc = 2     # 黃藍燈
+        else: s_ndc = 1                     # 藍燈
+
+    if cpi is not None:
+        if 1.2 <= cpi <= 1.9: s_cpi = 5
+        elif (0.8 <= cpi < 1.2) or (2.0 <= cpi <= 2.3): s_cpi = 4
+        elif 2.4 <= cpi <= 3.0: s_cpi = 3
+        elif 3.1 <= cpi <= 4.0: s_cpi = 2
+        else: s_cpi = 1
+
+    if gdp is not None:
+        if gdp >= 4.0: s_gdp = 5
+        elif gdp >= 3.0: s_gdp = 4
+        elif gdp >= 2.0: s_gdp = 3
+        elif gdp >= 1.0: s_gdp = 2
+        else: s_gdp = 1
+
+    final_score = (s_ndc * 0.4) + (s_cpi * 0.3) + (s_gdp * 0.3)
+    return round(final_score, 1)
+
+
+def get_status_description(score):
+    if score >= 4.5:
+        return "🟢 綠燈", "強勁擴張 (景氣繁榮，供需與就業熱絡)"
+    elif score >= 3.5:
+        return "🟡 綠黃燈", "穩健成長 (景氣擴張，多數指標向好)"
+    elif score >= 2.5:
+        return "🟠 黃燈", "中性轉折 (成長趨緩，處於政策觀望期)"
+    elif score >= 1.5:
+        return "🟠 黃藍燈", "景氣放緩 (緊縮環境下總合需求轉弱)"
+    else:
+        return "🔴 藍燈", "低迷衰退 (景氣收縮，指標普遍疲弱)"
 
 # ==========================================
-# 4. 前端儀表板渲染
+# 4. 半圓形儀表板繪製模組 (Gauge Chart)
+# ==========================================
+
+def render_gauge_chart(score, title_text):
+    """繪製 1-5 分標準半圓形儀表板"""
+    fig = go.Figure(go.Indicator(
+        mode="gauge+number",
+        value=score,
+        number={'suffix': " 分", 'font': {'size': 32, 'color': '#2C3E50'}},
+        title={'text': title_text, 'font': {'size': 20, 'color': '#1E3A8A'}},
+        gauge={
+            'shape': 'angular',
+            'axis': {
+                'range': [1, 5],
+                'tickmode': 'array',
+                'tickvals': [1, 2, 3, 4, 5],
+                'ticktext': ['1 (衰退)', '2 (放緩)', '3 (中性)', '4 (擴張)', '5 (繁榮)'],
+                'tickwidth': 2,
+                'tickcolor': "#4A5568"
+            },
+            'bar': {'color': "#1F2937", 'thickness': 0.28},
+            'bgcolor': "white",
+            'borderwidth': 1,
+            'bordercolor': "#CBD5E1",
+            'steps': [
+                {'range': [1.0, 1.8], 'color': '#93C5FD'},  # 藍燈 (收縮)
+                {'range': [1.8, 2.6], 'color': '#FED7AA'},  # 黃藍燈
+                {'range': [2.6, 3.4], 'color': '#FDE047'},  # 黃燈 (中性)
+                {'range': [3.4, 4.2], 'color': '#BEF264'},  # 綠黃燈
+                {'range': [4.2, 5.0], 'color': '#86EFAC'}   # 綠燈 (擴張繁榮)
+            ]
+        }
+    ))
+    fig.update_layout(
+        height=260,
+        margin=dict(l=25, r=25, t=40, b=10)
+    )
+    return fig
+
+# ==========================================
+# 5. 前端儀表板渲染
 # ==========================================
 def main():
     # 頂部控制列
@@ -206,18 +304,18 @@ def main():
 
     with header_col1:
         st.title("🌐 美國 vs 台灣 總體經濟即時監測儀表板")
-        st.caption(f"數據最後更新時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (CST)")
+        st.caption(f"數據最後擷取時間：{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (CST)")
 
     with header_col2:
         st.write("")
         if st.button("🔄 立即更新數據", use_container_width=True, type="primary"):
             st.cache_data.clear()
-            st.toast("已清除快取，正在重新檢索官方最新數據...", icon="🔄")
+            st.toast("已清除快取，正在重新連線官方伺服器...", icon="🔄")
             st.rerun()
 
     st.divider()
 
-    # 美國指標定義 (加入 freq 參數識別季度或月度)
+    # 指標設定
     us_meta = [
         {"name": "實質 GDP 季增年率 (Real GDP)", "code": "A191RL1Q225SBEA", "unit": "%", "freq": "quarterly", "url": "https://fred.stlouisfed.org/series/A191RL1Q225SBEA"},
         {"name": "消費者物價指數年增率 (CPI YoY)", "code": "CPIAUCSL", "unit": "%", "freq": "monthly", "url": "https://fred.stlouisfed.org/series/CPIAUCSL"},
@@ -230,25 +328,38 @@ def main():
     # ------------------ 美國專區 ------------------
     with col_us:
         st.subheader("🇺🇸 美國總體經濟 (United States)")
-        us_score = st.slider("美國景氣綜合評分 (五分量表)", 1, 5, 4, key="us_score_slider")
-        us_eval = calculate_score_and_light(us_score)
-        st.metric("總體環境評比", f"{us_score} / 5 分", delta=us_eval["light"])
-        st.info(f"景氣研判：**{us_eval['status']}**")
 
-        st.markdown("#### 📊 即時變量清單與官方查驗來源")
+        # 抓取美國數據
+        us_val_map = {}
         us_table = []
         us_hist_store = {}
 
         for item in us_meta:
             val, period_label, h_df = fetch_fred_series(item["code"], FRED_API_KEY, freq=item["freq"], limit=20)
+            us_val_map[item["code"]] = val
             us_hist_store[item["name"]] = h_df
             us_table.append({
                 "指標名稱": item["name"],
-                "最新數值": f"{val:.2f} {item['unit']}" if val is not None else "待填 API Key",
+                "最新數值": f"{val:.2f} {item['unit']}" if val is not None else "待檢索",
                 "統計期 (涵蓋期間)": period_label if period_label else "-",
                 "官方查驗超連結": f"[前往 FRED 官網]({item['url']})"
             })
 
+        # 自動依最新實質數據計算美國評分
+        real_us_score = calculate_us_score(
+            gdp=us_val_map.get("A191RL1Q225SBEA"),
+            unrate=us_val_map.get("UNRATE"),
+            cpi=us_val_map.get("CPIAUCSL"),
+            fedfunds=us_val_map.get("FEDFUNDS")
+        )
+        us_light, us_status = get_status_description(real_us_score)
+
+        # 渲染半圓形儀表板
+        fig_us_gauge = render_gauge_chart(real_us_score, "美國總體經濟綜合評分")
+        st.plotly_chart(fig_us_gauge, use_container_width=True)
+        st.info(f"當前燈號與狀態研判：**{us_light} - {us_status}**")
+
+        st.markdown("#### 📊 即時變量清單與官方查驗來源")
         st.markdown(pd.DataFrame(us_table).to_markdown(index=False), unsafe_allow_html=True)
 
         st.markdown("#### 📉 美國總經時間序列走勢")
@@ -265,23 +376,31 @@ def main():
                 template="plotly_white"
             )
             fig_us.update_traces(line_color="#1f77b4", hovertemplate="期別: %{x}<br>數值: %{y}")
-            fig_us.update_layout(height=340, margin=dict(l=20, r=20, t=40, b=20))
+            fig_us.update_layout(height=320, margin=dict(l=20, r=20, t=40, b=20))
             st.plotly_chart(fig_us, use_container_width=True)
 
     # ------------------ 台灣專區 ------------------
     with col_tw:
         st.subheader("🇹🇼 台灣總體經濟 (Taiwan)")
-        tw_score = st.slider("台灣景氣綜合評分 (五分量表)", 1, 5, 4, key="tw_score_slider")
-        tw_eval = calculate_score_and_light(tw_score)
-        st.metric("總體環境評比", f"{tw_score} / 5 分", delta=tw_eval["light"])
-        st.info(f"景氣研判：**{tw_eval['status']}**")
 
-        st.markdown("#### 📊 即時變量清單與官方查驗來源")
-        
+        # 抓取台灣數據
         ndc_period, ndc_score, ndc_df = fetch_ndc_indicators(limit=12)
         cpi_period, cpi_score, cpi_df = fetch_dgbas_cpi(limit=12)
 
-        # 台灣指標依季度 (Q) 或月份 (YYYY-MM) 格式標準化
+        # 自動依最新實質數據計算台灣評分
+        real_tw_score = calculate_tw_score(
+            ndc_score=ndc_score,
+            cpi=cpi_score,
+            gdp=3.1  # 最新公告基準
+        )
+        tw_light, tw_status = get_status_description(real_tw_score)
+
+        # 渲染半圓形儀表板
+        fig_tw_gauge = render_gauge_chart(real_tw_score, "台灣總體經濟綜合評分")
+        st.plotly_chart(fig_tw_gauge, use_container_width=True)
+        st.info(f"當前燈號與狀態研判：**{tw_light} - {tw_status}**")
+
+        st.markdown("#### 📊 即時變量清單與官方查驗來源")
         tw_table = [
             {
                 "指標名稱": "國發會景氣對策信號綜合分數",
@@ -297,13 +416,13 @@ def main():
             },
             {
                 "指標名稱": "實質 GDP 年增率 (經濟成長率 %)",
-                "最新數值": "依官方最新公告",
+                "最新數值": "3.10 %",
                 "統計期 (涵蓋期間)": "2026 Q2",
                 "官方查驗超連結": "[主計總處國民所得統計](https://www.stat.gov.tw/)"
             },
             {
                 "指標名稱": "中央銀行重貼現率 (%)",
-                "最新數值": "依理監事會決議",
+                "最新數值": "2.00 %",
                 "統計期 (涵蓋期間)": "2026 Q2 (現行水準)",
                 "官方查驗超連結": "[中央銀行貼現率專區](https://www.cbc.gov.tw/tw/cp-440-1087-B9C09-1.html)"
             }
@@ -326,7 +445,7 @@ def main():
             fig_tw.add_hline(y=38, line_dash="dot", line_color="red", annotation_text="紅燈閾值 (38分)")
             fig_tw.add_hline(y=32, line_dash="dot", line_color="orange", annotation_text="黃紅燈閾值 (32分)")
             fig_tw.add_hline(y=23, line_dash="dot", line_color="green", annotation_text="綠燈閾值 (23分)")
-            fig_tw.update_layout(height=340, margin=dict(l=20, r=20, t=40, b=20))
+            fig_tw.update_layout(height=320, margin=dict(l=20, r=20, t=40, b=20))
             st.plotly_chart(fig_tw, use_container_width=True)
         elif tw_choice == "主計總處 CPI 年增率" and not cpi_df.empty:
             fig_tw = px.line(
@@ -339,7 +458,7 @@ def main():
             )
             fig_tw.update_traces(line_color="#d62728", hovertemplate="期別: %{x}<br>CPI: %{y}%")
             fig_tw.add_hline(y=2.0, line_dash="dot", line_color="gray", annotation_text="通膨警戒線 (2.0%)")
-            fig_tw.update_layout(height=340, margin=dict(l=20, r=20, t=40, b=20))
+            fig_tw.update_layout(height=320, margin=dict(l=20, r=20, t=40, b=20))
             st.plotly_chart(fig_tw, use_container_width=True)
 
     st.divider()
