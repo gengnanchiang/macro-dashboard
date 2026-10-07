@@ -17,7 +17,7 @@ from datetime import datetime
 # 頁面配置
 # -------------------------------------------------------------
 st.set_page_config(
-    page_title="個股累計季財務五力分析儀表板 (含同比與環比)",
+    page_title="美台個股累計季財務五力分析儀表板 (含同比與環比)",
     page_icon="📊",
     layout="wide"
 )
