@@ -4,3 +4,6 @@ requests
 plotly
 tabulate
 yfinance
+numpy
+re
+datetime
