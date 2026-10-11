@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Sep  5 12:42:49 2026
+Created on Sun Oct 11 13:51:11 2026
 
 @author: jnchi
 """
@@ -14,7 +14,7 @@ from datetime import datetime
 
 # --- 1. 頁面基礎配置 ---
 st.set_page_config(
-    page_title="美台 AI 資本反轉訊號監測儀表板 (每項各扣0.5分制)",
+    page_title="美台 AI 資本反轉與 OpenAI 曝險監測儀表板",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -27,14 +27,16 @@ DATA_SOURCES = {
     "Amazon (AMZN)": "https://finance.yahoo.com/quote/AMZN/cash-flow/",
     "Meta (META)": "https://finance.yahoo.com/quote/META/cash-flow/",
     "NVIDIA (NVDA)": "https://finance.yahoo.com/quote/NVDA/financials/",
-    "Reuters 電網幽靈需求查核": "https://www.reuters.com/business/texas-halt-powering-data-centers-reflects-us-reckoning-over-ghost-demand-2026-09-01/",
-    "NVIDIA SEC 8-K 法定文件": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/nvda-20260817.htm"
+    "Oracle (ORCL)": "https://finance.yahoo.com/quote/ORCL/financials/",
+    "Reuters 電網幽靈需求": "https://www.reuters.com/business/texas-halt-powering-data-centers-reflects-us-reckoning-over-ghost-demand-2026-09-01/",
+    "NVIDIA SEC 8-K": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/nvda-20260817.htm",
+    "OpenAI 財務與合約分析": "https://mlq.ai/news/leaked-openai-financials-reveal-21b-operating-loss-on-13b-revenue-in-2025/"
 }
 
 # --- 3. 自動連網擷取 Yahoo Finance 真實市場數據 ---
 @st.cache_data(ttl=3600)
 def fetch_realtime_market_data():
-    tickers = ["TSM", "NVDA", "MSFT", "GOOGL", "AMZN", "META"]
+    tickers = ["TSM", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "ORCL"]
     results = {}
     for sym in tickers:
         try:
@@ -47,72 +49,61 @@ def fetch_realtime_market_data():
                 last_date = hist.index[-1].strftime('%Y-%m-%d')
             else:
                 last_price, pct_change, last_date = 0.0, 0.0, "N/A"
-            results[sym] = {
-                "price": last_price,
-                "change": pct_change,
-                "date": last_date
-            }
+            results[sym] = {"price": last_price, "change": pct_change, "date": last_date}
         except Exception:
             results[sym] = {"price": 0.0, "change": 0.0, "date": "連線逾時"}
     return results
 
 # --- 4. 自動化 Overbooking 雙軌審計引擎 ---
-def audit_overbooking_subfactors(texas_queue_gw, grid_retraction_rate, tsmc_inventory_turnover_days):
+def audit_overbooking(texas_queue_gw, retraction_rate, tsmc_inv_days):
     """
     Overbooking 雙軌評估：
     1. 電力 OVERBOOKING：德州申請 > 300GW 或 審查後管線萎縮率 > 35% -> 成立 (扣 0.5 分)
     2. 高階晶片 OVERBOOKING：台積電或晶片存貨週轉天數異常飆高 (> 110天) -> 成立 (扣 0.5 分)
     """
-    power_overbooking = (texas_queue_gw >= 300.0) or (grid_retraction_rate >= 35.0)
-    chip_overbooking = (tsmc_inventory_turnover_days >= 110.0)
-    return power_overbooking, chip_overbooking
+    power_ob = (texas_queue_gw >= 300.0) or (retraction_rate >= 35.0)
+    chip_ob = (tsmc_inv_days >= 110.0)
+    return power_ob, chip_ob
 
-# --- 5. 評分核心引擎 (每項各扣 0.5 分) ---
-def calculate_reversal_score_uniform(deductions_dict):
+# --- 5. 評分核心引擎 (回歸直接扣分，無尺度壓縮) ---
+def calculate_score(deductions_dict):
     """
     滿分 5.0 分制：
-    - 四大核心領先指標任一項觸發：各扣 0.5 分
-    - 電力 OVERBOOKING 觸發：扣 0.5 分
-    - 高階晶片 OVERBOOKING 觸發：扣 0.5 分
-    - 循環融資 / 專案保證槓桿觸發：扣 0.5 分
-    - 最低分：0.0 分
+    - 四大核心指標、雙軌 Overbooking、循環融資任一項觸發：各扣 0.5 分
+    - 最低 0.0 分
     """
     total_deductions = sum(deductions_dict.values())
     final_score = max(0.0, 5.0 - float(total_deductions))
-    return final_score, total_deductions
+    return round(final_score, 1), total_deductions
 
-# --- 6. 儀表板圖形繪製 ---
-def create_gauge_chart(score):
+# --- 6. 儀表板量表圖繪製 ---
+def create_gauge(score):
     fig = go.Figure(go.Indicator(
         mode="gauge+number",
         value=score,
         domain={'x': [0, 1], 'y': [0, 1]},
-        title={'text': "綜合健康評比 (5分量表)", 'font': {'size': 20, 'color': '#FFFFFF'}},
+        title={'text': "綜合健康評比 (5分滿分量表)", 'font': {'size': 20, 'color': '#FFFFFF'}},
         gauge={
             'axis': {'range': [0, 5], 'tickwidth': 1, 'tickcolor': "white"},
             'bar': {'color': "#2ecc71" if score >= 4.0 else ("#f39c12" if score >= 2.5 else "#e74c3c")},
             'steps': [
-                {'range': [0, 2.5], 'color': "rgba(231, 76, 60, 0.4)"},
-                {'range': [2.5, 4.0], 'color': "rgba(243, 156, 18, 0.4)"},
-                {'range': [4.0, 5.0], 'color': "rgba(46, 204, 113, 0.4)"}
+                {'range': [0, 2.0], 'color': "rgba(231, 76, 60, 0.4)"},
+                {'range': [2.0, 3.5], 'color': "rgba(243, 156, 18, 0.4)"},
+                {'range': [3.5, 5.0], 'color': "rgba(46, 204, 113, 0.4)"}
             ],
-            'threshold': {
-                'line': {'color': "red", 'width': 4},
-                'thickness': 0.75,
-                'value': 2.5
-            }
+            'threshold': {'line': {'color': "red", 'width': 3}, 'thickness': 0.75, 'value': 2.5}
         }
     ))
-    fig.update_layout(height=260, margin=dict(l=20, r=20, t=40, b=20), paper_bgcolor="rgba(0,0,0,0)")
+    fig.update_layout(height=260, margin=dict(l=20, r=20, t=35, b=20), paper_bgcolor="rgba(0,0,0,0)")
     return fig
 
-# --- 7. 介面主標題與「即時更新按鈕」 ---
-h_col1, h_col2 = st.columns([3, 1])
-with h_col1:
-    st.title("美台 AI 資本與重複預訂(Overbooking)監測儀表板")
+# --- 7. 主介面與即時更新按鈕 ---
+col_t1, col_t2 = st.columns([3, 1])
+with col_t1:
+    st.title("美台 AI 資本與 OpenAI 財務傳導監測儀表板")
     st.caption(f"🕒 系統時間：`{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} CST` | 評核標準：各項反轉/風險訊號皆扣 0.5 分制")
 
-with h_col2:
+with col_t2:
     st.write("")
     if st.button("🔄 立即重新更新資料", use_container_width=True, type="primary"):
         st.cache_data.clear()
@@ -122,8 +113,8 @@ with h_col2:
 market_data = fetch_realtime_market_data()
 
 # 顯示即時行情看板
-m_cols = st.columns(6)
-for idx, sym in enumerate(["TSM", "NVDA", "MSFT", "GOOGL", "AMZN", "META"]):
+m_cols = st.columns(7)
+for idx, sym in enumerate(["TSM", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "ORCL"]):
     info = market_data.get(sym, {"price": 0, "change": 0, "date": "N/A"})
     m_cols[idx].metric(
         label=f"{sym} ({info['date']})",
@@ -133,69 +124,69 @@ for idx, sym in enumerate(["TSM", "NVDA", "MSFT", "GOOGL", "AMZN", "META"]):
 
 st.markdown("---")
 
-# --- 8. 側邊欄：前瞻參數與雙軌 Overbooking 參數 ---
+# --- 8. 側邊欄參數設定 ---
 st.sidebar.header("四大核心領先指標設定 (各扣0.5分)")
-lead_time_months = st.sidebar.slider("1. Nvidia GPU 交貨期 (月)", min_value=1.0, max_value=18.0, value=8.5, step=0.5)
-hyperscaler_capex_yoy = st.sidebar.number_input("2. 四大巨頭 Capex 最低 YoY (%)", min_value=-50.0, max_value=150.0, value=35.0, step=1.0)
-nvda_dc_rev_growth = st.sidebar.number_input("3. 核心晶片營收年增率 YoY (%)", min_value=-30.0, max_value=250.0, value=117.0, step=1.0)
-enterprise_adoption_stagnant = st.sidebar.checkbox("4. 企業端活躍使用量實質停滯", value=False)
+lead_time = st.sidebar.slider("1. GPU 交貨期 (月)", 1.0, 18.0, 8.5, 0.5)
+capex_yoy = st.sidebar.number_input("2. 四大巨頭 Capex 最低 YoY (%)", -50.0, 150.0, 35.0, 1.0)
+chip_growth = st.sidebar.number_input("3. 核心晶片營收年增率 YoY (%)", -30.0, 250.0, 117.0, 1.0)
+openai_rev_gap = st.sidebar.checkbox("4. 企業端採用遲緩 / OpenAI 營收下修200億", value=True)
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("OVERBOOKING 雙軌評估 (各扣0.5分)")
-texas_queue_gw = st.sidebar.number_input("德州電網申報用電量 (GW)", min_value=10.0, max_value=800.0, value=474.0, step=10.0)
-grid_retraction_rate = st.sidebar.slider("加收擔保金後需求管線下修率 (%)", min_value=0.0, max_value=100.0, value=45.0, step=5.0)
-tsmc_inventory_days = st.sidebar.number_input("台積電先進封裝/製程存貨天數", min_value=30.0, max_value=180.0, value=82.0, step=1.0)
+st.sidebar.subheader("OVERBOOKING 雙軌 (各扣0.5分)")
+tx_gw = st.sidebar.number_input("德州電網排隊量 (GW)", 10.0, 800.0, 474.0, 10.0)
+grid_cut = st.sidebar.slider("要求押金後管線萎縮率 (%)", 0.0, 100.0, 45.0, 5.0)
+tsmc_inv = st.sidebar.number_input("台積電先進製程存貨天數", 30.0, 180.0, 82.0, 1.0)
 
 st.sidebar.markdown("---")
-st.sidebar.subheader("循環融資與專案保證 (扣0.5分)")
-circular_financing_risk = st.sidebar.checkbox("循環融資風險 (SB Energy 1050億保證 / 巨頭1750億發債)", value=True)
+st.sidebar.subheader("循環融資與閉環交易 (扣0.5分)")
+circular_loop = st.sidebar.checkbox("微軟算力閉環 / ORCL千億合約 / NVDA千億承諾", value=True)
 
-# 執行雙軌 Overbooking 審計
-power_ob_triggered, chip_ob_triggered = audit_overbooking_subfactors(texas_queue_gw, grid_retraction_rate, tsmc_inventory_days)
+# 執行雙軌審計
+power_ob, chip_ob = audit_overbooking(tx_gw, grid_cut, tsmc_inv)
 
-# 扣分權重計算字典 (全品項各扣 0.5 分)
-deductions_map = {
-    "指標 1: 硬體交貨前置時間 < 6個月": 0.5 if (lead_time_months < 6.0) else 0.0,
-    "指標 2: 四大巨頭 Capex 首度 YoY < 0%": 0.5 if (hyperscaler_capex_yoy < 0.0) else 0.0,
-    "指標 3: 核心晶片營收連兩季 YoY < 20%": 0.5 if (nvda_dc_rev_growth < 20.0) else 0.0,
-    "指標 4: 企業端採用停滯": 0.5 if enterprise_adoption_stagnant else 0.0,
-    "考核項 5a: 電力 OVERBOOKING (幽靈需求)": 0.5 if power_ob_triggered else 0.0,
-    "考核項 5b: 高階晶片 OVERBOOKING (晶圓/庫存積壓)": 0.5 if chip_ob_triggered else 0.0,
-    "考核項 6: 循環融資與專案槓桿": 0.5 if circular_financing_risk else 0.0
+# 統一鍵名 (全項各扣 0.5 分)
+deductions = {
+    "指標 1: 硬體交貨前置時間 < 6個月": 0.5 if lead_time < 6.0 else 0.0,
+    "指標 2: 四大巨頭 Capex 首度 YoY < 0%": 0.5 if capex_yoy < 0.0 else 0.0,
+    "指標 3: 核心晶片營收連兩季 YoY < 20%": 0.5 if chip_growth < 20.0 else 0.0,
+    "指標 4: 企業端採用與 OpenAI 營收缺口": 0.5 if openai_rev_gap else 0.0,
+    "考核項 5a: 電力 OVERBOOKING": 0.5 if power_ob else 0.0,
+    "考核項 5b: 高階晶片 OVERBOOKING": 0.5 if chip_ob else 0.0,
+    "考核項 6: 循環融資與閉環合約風險": 0.5 if circular_loop else 0.0
 }
 
-current_score, total_deductions = calculate_reversal_score_uniform(deductions_map)
+# 執行直接扣分計算
+final_score, total_deductions = calculate_score(deductions)
 
 # --- 9. 第一層：評分量表與綜合診斷 ---
-col_gauge, col_summary = st.columns([1, 2])
+col_g, col_s = st.columns([1, 2])
+with col_g:
+    st.plotly_chart(create_gauge(final_score), use_container_width=True)
 
-with col_gauge:
-    st.plotly_chart(create_gauge_chart(current_score), use_container_width=True)
-
-with col_summary:
+with col_s:
     st.markdown("### 綜合評比結論")
-    status_label = "🟢 安全區 (Safe)" if current_score >= 4.0 else ("🟡 警告區 (Warning)" if current_score >= 2.5 else "🔴 觸發反轉 (Triggered)")
-    st.subheader(f"當前評分：`{current_score:.1f} / 5.0 分` — 狀態：{status_label}")
-    
+    status_label = "🟢 安全區 (Safe)" if final_score >= 4.0 else ("🟡 警告區 (Warning)" if final_score >= 2.5 else "🔴 觸發反轉 (Triggered)")
+    st.subheader(f"當前評估得分：`{final_score:.1f} / 5.0 分` — 狀態：{status_label}")
     st.markdown(f"""
-    - **計分準則**：基準 5.0 分。四大指標、雙軌 Overbooking 與循環融資**每出現一項各扣 0.5 分**（累計扣除 `{total_deductions:.1f}` 分，最低為 0 分）。
-    - **已扣分項目說明**：
-      1. **電力 OVERBOOKING（扣 0.5 分）**：德州排隊達 `{texas_queue_gw} GW`，加收押金後管線萎縮率達 `{grid_retraction_rate}%`，電網申報端幽靈需求成立。
-      2. **循環融資與保證槓桿（扣 0.5 分）**：雲端巨頭 2026 發債 1,750 億美元，且 NVDA 對 SB Energy 存在 1,050 億美元初期租約累計保證與 30 億美元股權安排[cite: 1]。
-    - **未扣分項目**：四大核心指標目前均安全（交期 > 6個月、Capex 高成長、核心晶片營收年增 > 20%、企業採用持續擴張）[cite: 1]；高階晶片未見實體砍單（存貨天數 `{tsmc_inventory_days:.0f} 天` 正常）。
+    - **計分準則**：滿分 5.0 分，任一項風險或反轉訊號觸發**各扣 0.5 分**（最低為 0 分）[cite: 1]。目前累計扣除 `{total_deductions:.1f}` 分。
+    - **已扣分項目說明 (共扣 1.5 分)**：
+      1. **企業端採用與變現缺口（-0.5 分）**：OpenAI 2025 年實質營運赤字達 209.2 億美元，且 2026 年預期營收由 700 億下修至 500 億美元，終端應用無法填補龐大折舊[cite: 8, 14]。
+      2. **電力 OVERBOOKING（-0.5 分）**：德州申請量高達 `{tx_gw} GW`，且電力公司收押金後管線萎縮達 `{grid_cut}%`，電網申報端幽靈需求成立。
+      3. **循環融資與閉環合約（-0.5 分）**：涵蓋微軟 Azure 算力抵用閉環、甲骨文 1,000 億美元 Stargate 建設合約、NVIDIA 1,050 億美元租約擔保與巨頭千億發債[cite: 7, 14]。
+    - **未扣分項目**：硬體交期（`{lead_time} 個月`）、巨頭 Capex 增速、晶片營收年增率（`+{chip_growth:.0f}%`）均維持在安全區間[cite: 1]；台積電先進封裝維持滿載，存貨天數（`{tsmc_inv:.0f} 天`）正常，未見高階晶片實體砍單[cite: 8]。
     """)
 
 # --- 10. 第二層：監測矩陣清單與原始連結 ---
 st.markdown("---")
-st.subheader("美台四大核心指標、Overbooking 與循環融資監測矩陣")
+st.subheader("美台四大核心指標、雙軌 Overbooking 與 OpenAI 財務傳導矩陣")
 
 monitor_rows = [
     {
         "指標類別": "指標 1: 硬體交貨前置時間",
         "監測標的": "Nvidia Blackwell / H200 交付期",
         "扣分規則": "觸發扣 0.5 分",
-        "最新數值 / 狀態": f"{lead_time_months:.1f} 個月",
-        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions_map["指標 1: 硬體交貨前置時間 < 6個月"] > 0 else "✅ 正常安全",
+        "最新數值 / 狀態": f"{lead_time:.1f} 個月",
+        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions["指標 1: 硬體交貨前置時間 < 6個月"] > 0 else "✅ 正常安全",
         "資料公告日期": market_data["NVDA"]["date"],
         "官方/查核連結": DATA_SOURCES["NVIDIA (NVDA)"]
     },
@@ -203,8 +194,8 @@ monitor_rows = [
         "指標類別": "指標 2: CAPEX 指引反轉",
         "監測標的": "四大巨頭 2026 Capex (合計約 7,250 億美元)",
         "扣分規則": "觸發扣 0.5 分",
-        "最新數值 / 狀態": "各大巨頭維持資本支出高速成長",
-        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions_map["指標 2: 四大巨頭 Capex 首度 YoY < 0%"] > 0 else "✅ 正常安全",
+        "最新數值 / 狀態": "各大巨頭尚未調降年度資本支出",
+        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions["指標 2: 四大巨頭 Capex 首度 YoY < 0%"] > 0 else "✅ 正常安全",
         "資料公告日期": market_data["MSFT"]["date"],
         "官方/查核連結": DATA_SOURCES["Microsoft (MSFT)"]
     },
@@ -212,52 +203,52 @@ monitor_rows = [
         "指標類別": "指標 3: 核心晶片營收減速",
         "監測標的": "NVDA Data Center / TSMC HPC 營收",
         "扣分規則": "觸發扣 0.5 分",
-        "最新數值 / 狀態": f"NVDA Data Center YoY: +{nvda_dc_rev_growth:.0f}%",
-        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions_map["指標 3: 核心晶片營收連兩季 YoY < 20%"] > 0 else "✅ 正常安全",
+        "最新數值 / 狀態": f"NVDA Data Center YoY: +{chip_growth:.0f}%",
+        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions["指標 3: 核心晶片營收連兩季 YoY < 20%"] > 0 else "✅ 正常安全",
         "資料公告日期": "2026-08-26",
         "官方/查核連結": DATA_SOURCES["TSMC (TSM)"]
     },
     {
-        "指標類別": "指標 4: 企業端採用停滯",
-        "監測標的": "Fortune 500 企業 AI 應用經常性活躍度",
+        "指標類別": "指標 4: 企業端採用與變現",
+        "監測標的": "OpenAI 2026 營收下修至 500 億 / 營運赤字 209 億",
         "扣分規則": "觸發扣 0.5 分",
-        "最新數值 / 狀態": "使用量持續擴張，但需觀察 6,000 億缺口",
-        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions_map["指標 4: 企業端採用停滯"] > 0 else "✅ 持續觀察",
-        "資料公告日期": market_data["GOOGL"]["date"],
-        "官方/查核連結": DATA_SOURCES["Alphabet (GOOGL)"]
+        "最新數值 / 狀態": "高額推論費用侵蝕毛利，終端營收成長斜率放緩",
+        "判定結果": "⚠️ 觸發扣分 (-0.5)" if deductions["指標 4: 企業端採用與 OpenAI 營收缺口"] > 0 else "✅ 正常觀察",
+        "資料公告日期": "2026-10",
+        "官方/查核連結": DATA_SOURCES["OpenAI 財務與合約分析"]
     },
     {
         "指標類別": "考核項 5a: 電力 OVERBOOKING",
         "監測標的": "美國電網端幽靈需求 (德州 474GW / 全美 700GW)",
         "扣分規則": "觸發扣 0.5 分",
         "最新數值 / 狀態": "德州暫停併網；Exelon/AEP 需求下修 40-50%",
-        "判定結果": "⚠️ 觸發扣分 (-0.5)" if power_ob_triggered else "✅ 正常安全",
+        "判定結果": "⚠️ 觸發扣分 (-0.5)" if deductions["考核項 5a: 電力 OVERBOOKING"] > 0 else "✅ 正常安全",
         "資料公告日期": "2026-09-01",
-        "官方/查核連結": DATA_SOURCES["Reuters 電網幽靈需求查核"]
+        "官方/查核連結": DATA_SOURCES["Reuters 電網幽靈需求"]
     },
     {
         "指標類別": "考核項 5b: 高階晶片 OVERBOOKING",
         "監測標的": "台積電先進封裝排單與存貨週轉天數",
         "扣分規則": "觸發扣 0.5 分",
-        "最新數值 / 狀態": f"先進製程維持滿載，存貨天數 {tsmc_inventory_days:.0f} 天正常",
-        "判定結果": "❌ 觸發扣分 (-0.5)" if chip_ob_triggered else "✅ 正常安全 (扣0分)",
+        "最新數值 / 狀態": f"先進製程維持滿載，存貨天數 {tsmc_inv:.0f} 天正常",
+        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions["考核項 5b: 高階晶片 OVERBOOKING"] > 0 else "✅ 正常安全 (扣0分)",
         "資料公告日期": market_data["TSM"]["date"],
         "官方/查核連結": DATA_SOURCES["TSMC (TSM)"]
     },
     {
-        "指標類別": "考核項 6: 循環融資與專案槓桿",
-        "監測標的": "巨頭發債 1,750 億美元；SB Energy 4,390 億合約積壓與保證",
+        "指標類別": "考核項 6: 循環融資與閉環交易",
+        "監測標的": "MSFT 2,500 億承諾 / ORCL 1,000 億 / NVDA 千億曝險",
         "扣分規則": "觸發扣 0.5 分",
-        "最新數值 / 狀態": "NVDA 提供 1,050 億租約保證上限與 30 億股權曝險",
-        "判定結果": "⚠️ 觸發扣分 (-0.5)" if circular_financing_risk else "✅ 正常安全",
-        "資料公告日期": "2026-08-17 / 2026-09-01",
-        "官方/查核連結": DATA_SOURCES["NVIDIA SEC 8-K 法定文件"]
+        "最新數值 / 狀態": "依賴算力抵用額度折抵，高度集中單一客戶信用",
+        "判定結果": "⚠️ 觸發扣分 (-0.5)" if deductions["考核項 6: 循環融資與閉環合約風險"] > 0 else "✅ 正常安全",
+        "資料公告日期": "2026-08 / 2026-10",
+        "官方/查核連結": DATA_SOURCES["NVIDIA SEC 8-K"]
     }
 ]
 
-df_table = pd.DataFrame(monitor_rows)
+df_display = pd.DataFrame(monitor_rows)
 st.dataframe(
-    df_table,
+    df_display,
     column_config={
         "官方/查核連結": st.column_config.LinkColumn("點擊開啟官方文件 / 查核報導")
     },
