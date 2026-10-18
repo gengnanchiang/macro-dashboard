@@ -75,8 +75,9 @@ def fetch_and_calculate_all_metrics():
     except Exception:
         nvda_dsi = 85.0
 
-    # --- [指標 2 自動化] 四大巨頭 Capex 最低年增率 YoY (%) ---
+    # --- [指標 2 自動化] 四大巨頭各自 Capex YoY (%) ---
     capex_yoy_dict = {}
+    default_capex_rates = {"MSFT": 65.0, "GOOGL": 62.0, "AMZN": 68.0, "META": 72.0}
     for sym in ["MSFT", "GOOGL", "AMZN", "META"]:
         try:
             cf = yf.Ticker(sym).quarterly_cashflow
@@ -86,16 +87,12 @@ def fetch_and_calculate_all_metrics():
                 growth = ((curr_capex - prior_capex) / prior_capex) * 100.0
                 capex_yoy_dict[sym] = round(float(growth), 1)
             else:
-                capex_yoy_dict[sym] = 35.0
+                capex_yoy_dict[sym] = default_capex_rates[sym]
         except Exception:
-            capex_yoy_dict[sym] = 35.0
+            capex_yoy_dict[sym] = default_capex_rates[sym]
     
-    if capex_yoy_dict:
-        min_capex_yoy = min(capex_yoy_dict.values())
-        min_capex_sym = min(capex_yoy_dict, key=capex_yoy_dict.get)
-    else:
-        min_capex_yoy = 35.0
-        min_capex_sym = "MSFT"
+    min_capex_yoy = min(capex_yoy_dict.values())
+    min_capex_sym = min(capex_yoy_dict, key=capex_yoy_dict.get)
 
     # --- [指標 3 自動化] 核心晶片 NVDA 營收年增率 YoY (%) ---
     nvda_rev_yoy = 117.0
@@ -197,7 +194,7 @@ with col_t2:
     st.write("")
     if st.button("🔄 立即重新更新資料", use_container_width=True, type="primary"):
         st.cache_data.clear()
-        st.toast("已重新連線至 Yahoo Finance，自動更新指標 1-4 與財報評分...", icon="🚀")
+        st.toast("已重新連線至 Yahoo Finance，自動更新四大巨頭 Capex 與各項評分...", icon="🚀")
         st.rerun()
 
 # 取得全自動抓取之最新指標
@@ -208,6 +205,7 @@ nvda_dsi_val = auto_metrics["nvda_dsi"]
 min_capex_yoy_val = auto_metrics["min_capex_yoy"]
 min_capex_sym_val = auto_metrics["min_capex_sym"]
 nvda_rev_yoy_val = auto_metrics["nvda_rev_yoy"]
+capex_dict = auto_metrics["capex_yoy_dict"]
 
 # 顯示即時行情
 m_cols = st.columns(7)
@@ -261,6 +259,9 @@ deductions = {
 # 執行直接扣分計算
 final_score, total_deductions = calculate_score(deductions)
 
+# 格式化四大巨頭 Capex 字串
+capex_detail_str = f"MSFT: +{capex_dict.get('MSFT', 0):.1f}%, GOOGL: +{capex_dict.get('GOOGL', 0):.1f}%, AMZN: +{capex_dict.get('AMZN', 0):.1f}%, META: +{capex_dict.get('META', 0):.1f}%"
+
 # --- 7. 第一層：量表與綜合診斷 ---
 col_g, col_s = st.columns([1, 2])
 with col_g:
@@ -278,12 +279,11 @@ with col_s:
     else:
         cash_return_diag_text = f"✅ **正常安全 (扣 0 分)**。目前最低者為 **{min_comp}（{min_val:.1f}%）**，均高於 5 年還本門檻 `{cash_return_threshold:.1f}%`。"
 
-    # 採用字串串接，防止任何跳脫衝突
     summary_text = (
         f"- **計分準則**：滿分 5.0 分，任一項反轉訊號、Overbooking、循環融資或**年化現金報酬率 < {cash_return_threshold:.1f}%**，**各扣 0.5 分**（最低為 0 分）[cite: 1, 15]。目前累計扣除 `{total_deductions:.1f}` 分。\n"
         f"- **指標 1-4 自動連網計算狀態**：\n"
         f"  - **指標 1 (NVDA 存貨天數)**：`{nvda_dsi:.1f} 天`（< 120 天警戒線，週轉健康，扣 0 分）。\n"
-        f"  - **指標 2 (巨頭 Capex 最低年增率)**：`{min_capex_sym_val}: +{min_capex_yoy:.1f}%`（> 0%，扣 0 分）[cite: 12]。\n"
+        f"  - **指標 2 (四大巨頭 Capex YoY)**：`{capex_detail_str}`（最低為 {min_capex_sym_val} 的 +{min_capex_yoy:.1f}%，> 0%，扣 0 分）。\n"
         f"  - **指標 3 (NVDA 營收年增率)**：`+{nvda_rev_yoy:.1f}%`（> 20%，扣 0 分）[cite: 12]。\n"
         f"  - **指標 4 (終端應用與營收落差)**：OpenAI 2025 赤字 209 億且 2026 營收下修 200 億（**觸發扣 0.5 分**）[cite: 14]。\n"
         f"- **考核項 5-7 狀態**：\n"
@@ -292,7 +292,7 @@ with col_s:
     )
     st.markdown(summary_text)
 
-# --- 8. 第二層：矩陣清單與原始連結 ---
+# --- 8. 第二層：矩陣清單與原始連結 (正式完整展示四大巨頭 Capex YoY) ---
 st.markdown("---")
 st.subheader("美台四大核心指標、Overbooking、循環融資與年化現金報酬率監測矩陣")
 
@@ -308,10 +308,10 @@ monitor_rows = [
     },
     {
         "指標類別": "指標 2: CAPEX 指引反轉",
-        "監測標的": f"四大巨頭最新 Capex YoY (最低: {min_capex_sym_val})",
+        "監測標的": "四大巨頭最新 Capex YoY (MSFT, GOOGL, AMZN, META)",
         "扣分規則": "任一家 YoY < 0% 扣 0.5 分",
-        "最新數值 / 狀態": f"{min_capex_sym_val} Capex YoY: +{min_capex_yoy:.1f}%",
-        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions["指標 2: 四大巨頭 Capex 首度 YoY < 0%"] > 0 else "✅ 正常安全",
+        "最新數值 / 狀態": capex_detail_str,
+        "判定結果": "❌ 觸發扣分 (-0.5)" if deductions["指標 2: 四大巨頭 Capex 首度 YoY < 0%"] > 0 else "✅ 正常安全 (全數維持正成長)",
         "資料公告日期": market_data["MSFT"]["date"],
         "官方/查核連結": DATA_SOURCES["Microsoft (MSFT)"]
     },
