@@ -23,76 +23,124 @@ st.set_page_config(
 )
 
 # -------------------------------------------------------------
-# 模組一：同業族群自動辨識與推薦引擎
+# 模組一：同業族群自動辨識與推薦引擎 (台美股深度擴充版)
 # -------------------------------------------------------------
-# 建立常見產業/供應鏈同業預設對照庫 (涵蓋台股電子權值與美股科技龍頭)
 PRESET_PEER_GROUPS = {
-    # 晶圓代工 / 半導體製造
+    # ------------------ 美股科技與半導體次產業 ------------------
+    # AI 算力晶片 / GPU / CPU
+    "NVDA": ["AMD", "AVGO", "INTC", "ARM", "QCOM"],
+    "AMD": ["NVDA", "INTC", "ARM", "AVGO", "QCOM"],
+    "INTC": ["AMD", "NVDA", "TSM", "QCOM", "TXN"],
+    "ARM": ["NVDA", "AMD", "QCOM", "AVGO"],
+    
+    # 半導體設備巨頭 (Semi Capital Equipment)
+    "ASML": ["AMAT", "LRCX", "KLAC", "TER"],
+    "AMAT": ["LRCX", "KLAC", "ASML", "TER"],
+    "LRCX": ["AMAT", "KLAC", "ASML", "TER"],
+    "KLAC": ["AMAT", "LRCX", "ASML", "SNPS"],
+    
+    # 網通 / 類比 / 射頻 IC
+    "AVGO": ["QCOM", "MRVL", "NVDA", "TXN", "ADI"],
+    "QCOM": ["AVGO", "MRVL", "NVDA", "AMD", "TXN"],
+    "MRVL": ["AVGO", "QCOM", "ALAB", "NVDA"],
+    "TXN": ["ADI", "NXPI", "MCHP", "STM", "ON"],
+    "ADI": ["TXN", "NXPI", "MCHP", "ON"],
+    
+    # 記憶體與儲存裝置 (Memory & Storage)
+    "MU": ["WDC", "STX", "2408.TW", "8299.TW"],
+    "WDC": ["STX", "MU", "PSTG"],
+    "STX": ["WDC", "MU", "PSTG"],
+    
+    # 雲端巨頭 (Hyperscalers / CSPs / Cloud)
+    "MSFT": ["GOOGL", "AMZN", "META", "AAPL", "ORCL"],
+    "GOOGL": ["MSFT", "AMZN", "META", "AAPL"],
+    "AMZN": ["MSFT", "GOOGL", "BABA", "ORCL", "WMT"],
+    "META": ["GOOGL", "MSFT", "SNAP", "PINS", "AMZN"],
+    "ORCL": ["MSFT", "AMZN", "CRM", "SAP", "IBM"],
+    
+    # AI 伺服器與硬體基礎設施 (Enterprise Hardware / AI Server)
+    "SMCI": ["DELL", "HPE", "CSCO", "6669.TW", "2382.TW"],
+    "DELL": ["SMCI", "HPE", "CSCO", "NTAP", "HPQ"],
+    "HPE": ["DELL", "SMCI", "CSCO", "NTAP"],
+    "CSCO": ["ANET", "HPE", "DELL", "JNPR"],
+    "ANET": ["CSCO", "MRVL", "AVGO"],
+    
+    # 消費性電子 / 終端品牌
+    "AAPL": ["MSFT", "GOOGL", "AMZN", "SONY"],
+    "TSLA": ["RIVN", "LCID", "GM", "F", "NIO"],
+
+    # ------------------ 台股主要產業鏈 (支援跨市場對照) ------------------
+    # 晶圓代工
     "2330.TW": ["2303.TW", "5347.TWO", "6770.TW", "TSM"],
-    "2303.TW": ["2330.TW", "5347.TWO", "6770.TW"],
+    "TSM": ["2330.TW", "2303.TW", "INTC", "UMC"],
+    "2303.TW": ["2330.TW", "5347.TWO", "6770.TW", "UMC"],
     "5347.TWO": ["2330.TW", "2303.TW", "6770.TW"],
     "6770.TW": ["2303.TW", "5347.TWO", "2330.TW"],
     
-    # IC 設計 / SoC
+    # IC 設計 / SoC / ASIC
     "2454.TW": ["2379.TW", "3034.TW", "3443.TW", "3661.TW", "QCOM"],
     "2379.TW": ["2454.TW", "3034.TW", "6415.TWO"],
     "3034.TW": ["2454.TW", "2379.TW", "4961.TW"],
     "3661.TW": ["3443.TW", "3035.TW", "2454.TW"],
     
-    # AI 伺服器 / 系統組裝 (ODM)
-    "6669.TW": ["2382.TW", "3231.TW", "2356.TW", "2376.TW"], # 緯穎
-    "2382.TW": ["6669.TW", "3231.TW", "2317.TW", "2356.TW"], # 廣達
-    "3231.TW": ["2382.TW", "6669.TW", "2356.TW", "2317.TW"], # 緯創
-    "2317.TW": ["2382.TW", "3231.TW", "4938.TW", "2356.TW"], # 鴻海
-    "2356.TW": ["2382.TW", "3231.TW", "6669.TW", "2376.TW"], # 英業達
+    # AI 伺服器 ODM / 系統代工
+    "6669.TW": ["2382.TW", "3231.TW", "2356.TW", "SMCI", "DELL"], # 緯穎
+    "2382.TW": ["6669.TW", "3231.TW", "2317.TW", "SMCI"],         # 廣達
+    "3231.TW": ["2382.TW", "6669.TW", "2356.TW", "2317.TW"],     # 緯創
+    "2317.TW": ["2382.TW", "3231.TW", "4938.TW", "2356.TW"],     # 鴻海
+    "2356.TW": ["2382.TW", "3231.TW", "6669.TW", "2376.TW"],     # 英業達
     
     # 被動元件
     "2327.TW": ["2492.TW", "3026.TW", "2456.TW"], # 國巨
     "2492.TW": ["2327.TW", "3026.TW", "6173.TWO"], # 華新科
     
-    # 記憶體製造 / 模組
-    "2408.TW": ["8299.TW", "2344.TW", "2337.TW", "MU"], # 南亞科
-    "8299.TW": ["2408.TW", "3260.TWO", "2451.TW"], # 群聯
+    # 記憶體製造與模組
+    "2408.TW": ["MU", "8299.TW", "2344.TW", "2337.TW"], # 南亞科
+    "8299.TW": ["MU", "WDC", "2408.TW", "3260.TWO"],     # 群聯
     
-    # 連接器 / 線束 (伺服器/車用)
-    "3665.TW": ["3023.TW", "3533.TW", "3003.TW"], # 貿聯-KY
-    
-    # 美股科技龍頭對照
-    "NVDA": ["AMD", "INTC", "TSM", "AVGO", "QCOM"],
-    "AMD": ["NVDA", "INTC", "QCOM", "AVGO"],
-    "AAPL": ["MSFT", "GOOGL", "AMZN", "META"]
+    # 連接器 / 伺服器與車用線束
+    "3665.TW": ["3023.TW", "3533.TW", "3003.TW"]        # 貿聯-KY
+}
+
+# 美股產業關鍵字映射池 (當輸入未收錄字典之美股時自動啟用)
+US_SECTOR_FALLBACK_POOLS = {
+    "semiconductor": ["NVDA", "AMD", "TSM", "AVGO", "QCOM"],
+    "software": ["MSFT", "ORCL", "CRM", "ADBE", "NOW"],
+    "hardware": ["AAPL", "DELL", "HPQ", "SMCI"],
+    "cloud": ["AMZN", "MSFT", "GOOGL", "ORCL"],
+    "internet": ["GOOGL", "META", "AMZN", "NFLX"],
+    "automotive": ["TSLA", "GM", "F", "RIVN"],
+    "biotech": ["LLY", "NVO", "JNJ", "PFE", "MRK"],
+    "financial": ["JPM", "BAC", "MS", "GS", "WFC"]
 }
 
 def auto_detect_peer_group(ticker: str) -> list:
-    """
-    依據輸入個股代碼自動識別同業族群代碼。
-    若未收錄於精準對照表，則向 Yahoo Finance 查詢產業 (Industry) 進行通用歸類。
-    """
     clean_ticker = ticker.strip().upper()
+    
+    # 1. 精準對照庫
     if clean_ticker in PRESET_PEER_GROUPS:
         return PRESET_PEER_GROUPS[clean_ticker]
     
-    # 次級檢索：透過 yfinance info 擷取產業資訊
+    # 2. 動態次產業映射 (yfinance info 檢索)
     try:
         info = yf.Ticker(clean_ticker).info
-        industry = info.get("industry", "")
-        sector = info.get("sector", "")
-
-        # 根據業界分類指派同業基準
-        if "Semiconductor" in industry or "Semiconductors" in industry:
-            return ["2330.TW", "2303.TW", "2454.TW", "TSM"]
-        elif "Computer" in industry or "Hardware" in industry:
-            return ["2382.TW", "3231.TW", "2317.TW", "6669.TW"]
-        elif "Technology" in sector:
-            return ["2330.TW", "2454.TW", "2382.TW"]
+        industry = info.get("industry", "").lower()
+        sector = info.get("sector", "").lower()
+        
+        for key, pool in US_SECTOR_FALLBACK_POOLS.items():
+            if key in industry or key in sector:
+                return [p for p in pool if p != clean_ticker][:4]
     except Exception:
         pass
 
-    # 預設通用大型權值池
-    return ["2330.TW", "2303.TW", "2454.TW"]
+    # 3. 預設兜底池 (區分美股與台股)
+    if clean_ticker.endswith(".TW") or clean_ticker.endswith(".TWO"):
+        return ["2330.TW", "2303.TW", "2454.TW"]
+    else:
+        return ["NVDA", "MSFT", "AAPL", "GOOGL"]
 
 # -------------------------------------------------------------
-# 模組二：財務資料抓取核心模組 (含成長力降級備援機制)
+# 模組二：財務資料抓取核心模組 (含成長力層級降級備援機制)
 # -------------------------------------------------------------
 def fetch_single_ticker_ratios(ticker: str, target_year: int, target_quarter: int):
     try:
@@ -106,6 +154,7 @@ def fetch_single_ticker_ratios(ticker: str, target_year: int, target_quarter: in
         inc_cols = sorted(inc.columns)
         bs_cols = sorted(bs.columns)
 
+        # 篩選當年度季度
         current_year_cols = [c for c in inc_cols if c.year == target_year]
         if len(current_year_cols) < target_quarter:
             return None
@@ -208,6 +257,7 @@ class DynamicPeerPercentileEngine:
         if len(clean_series) == 0 or pd.isna(target_value):
             return 50.0, 5
 
+        # 正向：數值越大排名越前；逆向（如負債比）：數值越小排名越前
         if ascending:
             rank = (clean_series < target_value).sum() + 0.5 * (clean_series == target_value).sum()
         else:
@@ -282,7 +332,7 @@ with col1:
     ticker_input = st.text_input("目標個股代碼", value="2330.TW", help="支援台股 (加 .TW 或 .TWO) 與美股 Ticker")
     period_input = st.text_input("年度季別 (YYYYQq)", value="2026Q2", help="格式如：2026Q2、2025Q4")
 
-# 自動推導同業族群代碼
+# 自動推導同業族群代碼 (隨輸入個股即時聯動)
 detected_peers = auto_detect_peer_group(ticker_input)
 default_peer_str = ", ".join(detected_peers)
 
@@ -290,7 +340,7 @@ with col2:
     peer_input = st.text_input(
         "自動生成之同業比對族群代碼 (可依研究需求自由增刪)", 
         value=default_peer_str,
-        help="系統已依個股產業自動匹配同業池，亦可手動以逗號分隔新增代碼。"
+        help="系統已依個股產業自動匹配同業池，亦可手動以逗號分隔新增或刪改代碼。"
     )
 
 run_btn = st.button("執行五力動態橫向校準分析", type="primary", use_container_width=True)
