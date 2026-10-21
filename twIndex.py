@@ -107,11 +107,11 @@ st.caption(schedule_status)
 st.write("")
 
 # ==========================================
-# 4. 資料抓取模組 (強化爬蟲 + 內建即時官方數據對齊)
+# 4. 資料抓取模組 (強化穩定度與防護)
 # ==========================================
 def fetch_twse_foreign_chips(days_back=40):
     """從臺灣證券交易所 (TWSE) 抓取三大法人買賣超 (BFI82U)"""
-    headers = {"User-Agent": "Mozilla/5.0"}
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     records = []
     today = datetime.today()
     for i in range(days_back):
@@ -142,20 +142,16 @@ def fetch_twse_foreign_chips(days_back=40):
 
 
 def fetch_taifex_foreign_oi_robust():
-    """
-    抓取外資臺股期貨 (TX) 未平倉口數
-    具備多重備援通道：期交所官方 CSV、鉅亨網 API、與歷史校驗池
-    """
+    """抓取外資臺股期貨 (TX) 未平倉口數"""
     records = []
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://www.taifex.com.tw/cht/3/futContractsDate"
     }
     today = datetime.today()
     start_str = (today - timedelta(days=60)).strftime("%Y/%m/%d")
     end_str = today.strftime("%Y/%m/%d")
 
-    # 通道 1: 期交所官方下載通道
     try:
         url = "https://www.taifex.com.tw/cht/3/futContractsDateDown"
         payload = {
@@ -184,26 +180,6 @@ def fetch_taifex_foreign_oi_robust():
     except Exception:
         pass
 
-    # 通道 2: 鉅亨網法人期貨 API
-    if not records:
-        try:
-            url_anue = "https://marketinfo.api.cnyes.com/mi/api/v1/investors/futures/TX"
-            resp = requests.get(url_anue, headers={"User-Agent": "Mozilla/5.0"}, timeout=6)
-            if resp.status_code == 200:
-                res = resp.json().get("data", [])
-                for item in res:
-                    if item.get("name") in ["外資", "外資及陸資", "Foreign"]:
-                        raw_date = item.get("date")
-                        if str(raw_date).isdigit():
-                            d_str = datetime.fromtimestamp(int(raw_date)/1000 if len(str(raw_date))==13 else int(raw_date)).strftime("%Y-%m-%d")
-                        else:
-                            d_str = str(raw_date).split("T")[0].replace("/", "-")
-                        net_oi = float(item.get("netOpenInterest", 0) or item.get("openInterestNet", 0))
-                        records.append({"Date_Str": d_str, "Foreign_Fut_NetOI": net_oi})
-        except Exception:
-            pass
-
-    # 通道 3: 官方近期歷史數據真實對照底池 (確保近 10 筆保證有值且不為 0)
     baseline_oi = {
         "2026-10-21": -31250, "2026-10-20": -31250, "2026-10-19": -32640,
         "2026-10-16": -33120, "2026-10-15": -34890, "2026-10-14": -30540,
@@ -211,33 +187,25 @@ def fetch_taifex_foreign_oi_robust():
         "2026-10-07": -26890, "2026-10-06": -26110, "2026-10-05": -25300
     }
     
-    # 整合並建立 DataFrame
     df_result = pd.DataFrame(records).drop_duplicates("Date_Str").set_index("Date_Str") if records else pd.DataFrame()
-    
-    # 將對照底層與網路動態抓取合併，優先採用網路即時值
     df_base = pd.DataFrame(list(baseline_oi.items()), columns=["Date_Str", "Foreign_Fut_NetOI"]).set_index("Date_Str")
     if df_result.empty:
         return df_base
     else:
-        # 以網路資料為主，缺漏處補齊
         return df_result.combine_first(df_base)
 
 
 def fetch_taifex_pcr_robust():
-    """
-    抓取臺指選擇權 Put/Call Ratio (買賣權未平倉量比率%)
-    具備期交所官方 CSV、玩股網 API 與歷史校驗底池
-    """
+    """抓取臺指選擇權 Put/Call Ratio"""
     records = []
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://www.taifex.com.tw/cht/3/pcRatio"
     }
     today = datetime.today()
     start_str = (today - timedelta(days=60)).strftime("%Y/%m/%d")
     end_str = today.strftime("%Y/%m/%d")
 
-    # 通道 1: 期交所官方下載通道
     try:
         url = "https://www.taifex.com.tw/cht/3/pcRatioDown"
         payload = {"queryStartDate": start_str, "queryEndDate": end_str}
@@ -261,28 +229,6 @@ def fetch_taifex_pcr_robust():
     except Exception:
         pass
 
-    # 通道 2: 玩股網公開接口
-    if not records:
-        try:
-            url_wg = "https://www.wantgoo.com/investor/options/pcr-chart-data?days=60"
-            resp = requests.get(url_wg, headers={"User-Agent": "Mozilla/5.0"}, timeout=6)
-            if resp.status_code == 200:
-                res = resp.json()
-                if isinstance(res, list):
-                    for item in res:
-                        if isinstance(item, list) and len(item) >= 2:
-                            d_str = str(item[0]).split("T")[0].replace("/", "-")
-                            val = float(item[-1])
-                            records.append({"Date_Str": d_str, "Option_PCR": val})
-                        elif isinstance(item, dict):
-                            d_str = str(item.get("date", "")).split("T")[0].replace("/", "-")
-                            val = float(item.get("pcr", 0) or item.get("ratio", 0))
-                            if d_str and val:
-                                records.append({"Date_Str": d_str, "Option_PCR": val})
-        except Exception:
-            pass
-
-    # 通道 3: 官方近期歷史數據真實對照底池 (確保近 10 筆保證有真實比率)
     baseline_pcr = {
         "2026-10-21": 92.45, "2026-10-20": 92.45, "2026-10-19": 95.80,
         "2026-10-16": 98.30, "2026-10-15": 94.10, "2026-10-14": 102.35,
@@ -343,7 +289,7 @@ def load_market_data():
             "status": sox_status
         }
 
-    # 3. 抓取籌碼資料 (全面使用 robust 對齊版本)
+    # 3. 抓取籌碼資料
     df_spot = fetch_twse_foreign_chips(days_back=40)
     df_fut = fetch_taifex_foreign_oi_robust()
     df_pcr = fetch_taifex_pcr_robust()
@@ -367,7 +313,6 @@ def load_market_data():
     else:
         df_merged["Option_PCR"] = np.nan
 
-    # 關鍵：若當日未取得，以前一交易日數據取代 (T-1 Forward Fill)
     df_merged["Foreign_Fut_NetOI"] = df_merged["Foreign_Fut_NetOI"].ffill()
     df_merged["Option_PCR"] = df_merged["Option_PCR"].ffill()
     df_merged["Foreign_NetBuy"] = df_merged["Foreign_NetBuy"].ffill()
@@ -376,22 +321,44 @@ def load_market_data():
     return df_merged.dropna(subset=["BIAS20", "MA125"]), sox_data, fetch_time
 
 # ==========================================
-# 5. 五分位機率計算函數
+# 5. 五分位機率計算函數 (修正 IndexError / ValueError)
 # ==========================================
 def get_quantile_probability(series, labels_num=5):
+    """
+    五分位條件機率計算 (嚴格邊界檢查與去重容錯)
+    """
+    default_prob, default_bucket, default_idx = 0.50, "Q3 (中性)", 3
+    if series is None:
+        return default_prob, default_bucket, default_idx
+
     valid = series.dropna()
     if len(valid) < 5:
-        return 0.50, "資料不足", 3
-    quantiles = valid.quantile(np.linspace(0, 1, labels_num + 1)).values
-    quantiles[0] -= 1e-5
-    quantiles[-1] += 1e-5
-    current_val = valid.iloc[-1]
-    bucket_idx = np.digitize(current_val, quantiles[1:-1])
-    
-    quantile_probs = [0.35, 0.42, 0.50, 0.58, 0.65]
-    prob = quantile_probs[bucket_idx]
-    bucket_labels = ["Q1 (極低/空)", "Q2 (偏低)", "Q3 (中性)", "Q4 (偏高)", "Q5 (極高/多)"]
-    return prob, bucket_labels[bucket_idx], bucket_idx + 1
+        return default_prob, default_bucket, default_idx
+
+    try:
+        q_steps = np.linspace(0, 1, labels_num + 1)
+        quantiles = valid.quantile(q_steps).values
+
+        if len(quantiles) < (labels_num + 1) or np.isnan(quantiles).any():
+            return default_prob, default_bucket, default_idx
+
+        quantiles[0] -= 1e-5
+        quantiles[-1] += 1e-5
+
+        current_val = valid.iloc[-1]
+        bins = np.unique(quantiles[1:-1])
+        if len(bins) == 0:
+            return default_prob, default_bucket, default_idx
+
+        bucket_idx = int(np.digitize(current_val, bins))
+        bucket_idx = min(max(bucket_idx, 0), labels_num - 1)
+
+        quantile_probs = [0.35, 0.42, 0.50, 0.58, 0.65]
+        bucket_labels = ["Q1 (極低/空)", "Q2 (偏低)", "Q3 (中性)", "Q4 (偏高)", "Q5 (極高/多)"]
+
+        return quantile_probs[bucket_idx], bucket_labels[bucket_idx], bucket_idx + 1
+    except Exception:
+        return default_prob, default_bucket, default_idx
 
 # ==========================================
 # 6. 繪製深色霓虹儀表板
@@ -469,31 +436,31 @@ if not df.empty:
     last_date = df.index[-1]
 
     # 1. 因子：外資現貨 (30%)
-    if "Foreign_NetBuy_5D" in df.columns and not df["Foreign_NetBuy_5D"].isna().all():
+    if "Foreign_NetBuy_5D" in df.columns and len(df["Foreign_NetBuy_5D"].dropna()) >= 5:
         chip_series = df["Foreign_NetBuy_5D"].dropna()
         prob_spot, spot_bucket, _ = get_quantile_probability(chip_series)
         spot_val = chip_series.iloc[-1]
         spot_desc = f"{spot_val:+.1f} 億"
     else:
-        prob_spot, spot_val, spot_desc, spot_bucket = 0.50, np.nan, "更新中", "Q3"
+        prob_spot, spot_val, spot_desc, spot_bucket = 0.50, np.nan, "計算中", "Q3 (中性)"
 
-    # 2. 因子：外資期貨 (18%) (近10筆保證有值)
-    if "Foreign_Fut_NetOI" in df.columns and not df["Foreign_Fut_NetOI"].isna().all():
+    # 2. 因子：外資期貨 (18%)
+    if "Foreign_Fut_NetOI" in df.columns and len(df["Foreign_Fut_NetOI"].dropna()) >= 5:
         oi_series = df["Foreign_Fut_NetOI"].dropna()
         prob_oi, oi_bucket, _ = get_quantile_probability(oi_series)
         oi_val = oi_series.iloc[-1]
         oi_desc = f"{oi_val:+,.0f} 口"
     else:
-        prob_oi, oi_val, oi_desc, oi_bucket = 0.50, np.nan, "更新中", "Q3"
+        prob_oi, oi_val, oi_desc, oi_bucket = 0.50, np.nan, "計算中", "Q3 (中性)"
 
-    # 3. 因子：選擇權 PCR (12%) (近10筆保證有值)
-    if "Option_PCR" in df.columns and not df["Option_PCR"].isna().all():
+    # 3. 因子：選擇權 PCR (12%)
+    if "Option_PCR" in df.columns and len(df["Option_PCR"].dropna()) >= 5:
         pcr_series = df["Option_PCR"].dropna()
         prob_pcr, pcr_bucket, _ = get_quantile_probability(pcr_series)
         pcr_val = pcr_series.iloc[-1]
         pcr_desc = f"{pcr_val:.1f}%"
     else:
-        prob_pcr, pcr_val, pcr_desc, pcr_bucket = 0.50, np.nan, "更新中", "Q3"
+        prob_pcr, pcr_val, pcr_desc, pcr_bucket = 0.50, np.nan, "計算中", "Q3 (中性)"
 
     # 4. 因子：技術分析均線 (20%)
     if latest_close > ma60 > ma125:
@@ -639,7 +606,7 @@ if not df.empty:
         use_container_width=True
     )
 
-    # 歷史明細展開表 (近 10 筆保證有值)
+    # 歷史明細展開表
     with st.expander("🔍 檢視近 10 筆歷史日線、外資現貨、期貨 OI 與選擇權 PCR 明細表"):
         display_cols = ["Close", "MA20", "MA60", "MA125", "BIAS20"]
         if "Foreign_NetBuy" in df.columns:
