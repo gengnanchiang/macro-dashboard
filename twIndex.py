@@ -59,9 +59,20 @@ st.markdown("""
 # ==========================================
 # 2. 每日 15:30 自動排程檢查核心邏輯
 # ==========================================
-now = datetime.now()
-today_str = now.strftime("%Y-%m-%d")
+#now = datetime.now()
+#today_str = now.strftime("%Y-%m-%d")
+# 原本的寫法：
+# now = datetime.now()
 
+# 改為以下寫法 (自帶時區轉換，免設任何後台變數)：
+try:
+    from zoneinfo import ZoneInfo
+    now = datetime.now(ZoneInfo("Asia/Taipei"))
+except Exception:
+    # 備用方案 (若環境無 zoneinfo 則手動補上 8 小時)
+    now = datetime.utcnow() + timedelta(hours=8)
+
+today_str = now.strftime("%Y-%m-%d")
 if "last_scheduled_date" not in st.session_state:
     st.session_state.last_scheduled_date = None
 
