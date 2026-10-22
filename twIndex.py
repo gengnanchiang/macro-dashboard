@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Thu Oct 22 20:04:23 2026
-
-@author: jnchi
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Thu Oct 22 08:54:51 2026
+Created on Thu Oct 22 20:54:51 2026
 
 @author: jnchi
 """
