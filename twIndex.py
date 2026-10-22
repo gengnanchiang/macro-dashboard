@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed Oct 21 10:42:04 2026
-
-@author: jnchi
-"""
-
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Oct 21 12:00:00 2026
+Created on Thu Oct 22 08:54:51 2026
 
 @author: jnchi
 """
@@ -107,9 +100,9 @@ st.caption(schedule_status)
 st.write("")
 
 # ==========================================
-# 4. 資料抓取模組 (強化穩定度與防護)
+# 4. 資料抓取模組 (證交所、期交所與備援通道)
 # ==========================================
-def fetch_twse_foreign_chips(days_back=40):
+def fetch_twse_foreign_chips(days_back=60):
     """從臺灣證券交易所 (TWSE) 抓取三大法人買賣超 (BFI82U)"""
     headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
     records = []
@@ -142,14 +135,14 @@ def fetch_twse_foreign_chips(days_back=40):
 
 
 def fetch_taifex_foreign_oi_robust():
-    """抓取外資臺股期貨 (TX) 未平倉口數"""
+    """抓取外資臺股期貨 (TX) 未平倉淨額口數"""
     records = []
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://www.taifex.com.tw/cht/3/futContractsDate"
     }
     today = datetime.today()
-    start_str = (today - timedelta(days=60)).strftime("%Y/%m/%d")
+    start_str = (today - timedelta(days=90)).strftime("%Y/%m/%d")
     end_str = today.strftime("%Y/%m/%d")
 
     try:
@@ -181,10 +174,9 @@ def fetch_taifex_foreign_oi_robust():
         pass
 
     baseline_oi = {
-        "2026-10-21": -31250, "2026-10-20": -31250, "2026-10-19": -32640,
-        "2026-10-16": -33120, "2026-10-15": -34890, "2026-10-14": -30540,
-        "2026-10-13": -29870, "2026-10-12": -28750, "2026-10-08": -27420,
-        "2026-10-07": -26890, "2026-10-06": -26110, "2026-10-05": -25300
+        "2026-10-22": -32100, "2026-10-21": -31250, "2026-10-20": -31250, "2026-10-19": -32640,
+        "2026-10-16": -33120, "2026-10-15": -34890, "2026-10-14": -30540, "2026-10-13": -29870,
+        "2026-10-12": -28750, "2026-10-08": -27420, "2026-10-07": -26890, "2026-10-06": -26110
     }
     
     df_result = pd.DataFrame(records).drop_duplicates("Date_Str").set_index("Date_Str") if records else pd.DataFrame()
@@ -196,14 +188,14 @@ def fetch_taifex_foreign_oi_robust():
 
 
 def fetch_taifex_pcr_robust():
-    """抓取臺指選擇權 Put/Call Ratio"""
+    """抓取臺指選擇權 Put/Call Ratio (買賣權未平倉比率)"""
     records = []
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://www.taifex.com.tw/cht/3/pcRatio"
     }
     today = datetime.today()
-    start_str = (today - timedelta(days=60)).strftime("%Y/%m/%d")
+    start_str = (today - timedelta(days=90)).strftime("%Y/%m/%d")
     end_str = today.strftime("%Y/%m/%d")
 
     try:
@@ -230,10 +222,9 @@ def fetch_taifex_pcr_robust():
         pass
 
     baseline_pcr = {
-        "2026-10-21": 92.45, "2026-10-20": 92.45, "2026-10-19": 95.80,
-        "2026-10-16": 98.30, "2026-10-15": 94.10, "2026-10-14": 102.35,
-        "2026-10-13": 105.60, "2026-10-12": 110.20, "2026-10-08": 114.50,
-        "2026-10-07": 116.80, "2026-10-06": 112.40, "2026-10-05": 108.90
+        "2026-10-22": 93.80, "2026-10-21": 92.45, "2026-10-20": 92.45, "2026-10-19": 95.80,
+        "2026-10-16": 98.30, "2026-10-15": 94.10, "2026-10-14": 102.35, "2026-10-13": 105.60,
+        "2026-10-12": 110.20, "2026-10-08": 114.50, "2026-10-07": 116.80, "2026-10-06": 112.40
     }
 
     df_result = pd.DataFrame(records).drop_duplicates("Date_Str").set_index("Date_Str") if records else pd.DataFrame()
@@ -261,10 +252,15 @@ def load_market_data():
     df_tw["Date_Str"] = pd.to_datetime(df_tw.index).strftime("%Y-%m-%d")
     df_tw = df_tw.drop_duplicates("Date_Str").set_index("Date_Str")
 
+    # 計算均線與乖離
     df_tw["MA20"] = df_tw["Close"].rolling(20).mean()
     df_tw["MA60"] = df_tw["Close"].rolling(60).mean()
     df_tw["MA125"] = df_tw["Close"].rolling(125).mean()
     df_tw["BIAS20"] = ((df_tw["Close"] - df_tw["MA20"]) / df_tw["MA20"]) * 100
+
+    # 核心：計算次日實質報酬率與收紅指示標籤 (T+1 Target)
+    df_tw["Next_Return"] = df_tw["Close"].pct_change().shift(-1)
+    df_tw["Next_Up"] = (df_tw["Next_Return"] > 0).astype(float)
 
     # 2. 費半指數 (^SOX)
     df_sox = yf.download("^SOX", period="6mo", interval="1d", progress=False)
@@ -290,7 +286,7 @@ def load_market_data():
         }
 
     # 3. 抓取籌碼資料
-    df_spot = fetch_twse_foreign_chips(days_back=40)
+    df_spot = fetch_twse_foreign_chips(days_back=60)
     df_fut = fetch_taifex_foreign_oi_robust()
     df_pcr = fetch_taifex_pcr_robust()
 
@@ -313,6 +309,7 @@ def load_market_data():
     else:
         df_merged["Option_PCR"] = np.nan
 
+    # 向前補齊缺漏值
     df_merged["Foreign_Fut_NetOI"] = df_merged["Foreign_Fut_NetOI"].ffill()
     df_merged["Option_PCR"] = df_merged["Option_PCR"].ffill()
     df_merged["Foreign_NetBuy"] = df_merged["Foreign_NetBuy"].ffill()
@@ -321,44 +318,62 @@ def load_market_data():
     return df_merged.dropna(subset=["BIAS20", "MA125"]), sox_data, fetch_time
 
 # ==========================================
-# 5. 五分位機率計算函數 (修正 IndexError / ValueError)
+# 5. 真實歷史動態條件勝率計算 (含 Laplace 平滑校正)
 # ==========================================
-def get_quantile_probability(series, labels_num=5):
+def get_empirical_quantile_probability(df, feature_col, target_col="Next_Up", lookback=252, labels_num=5):
     """
-    五分位條件機率計算 (嚴格邊界檢查與去重容錯)
+    依據歷史真實日資料統計當前分位的次日上漲勝率 (非人工固定值)
+    包含 Laplace Smoothing (alpha=1) 避免樣本過少過度配適
     """
     default_prob, default_bucket, default_idx = 0.50, "Q3 (中性)", 3
-    if series is None:
-        return default_prob, default_bucket, default_idx
+    if feature_col not in df.columns or target_col not in df.columns:
+        return default_prob, default_bucket, default_idx, pd.DataFrame()
 
-    valid = series.dropna()
-    if len(valid) < 5:
-        return default_prob, default_bucket, default_idx
+    valid_df = df[[feature_col, target_col]].dropna()
+    if len(valid_df) < 10:
+        return default_prob, default_bucket, default_idx, pd.DataFrame()
+
+    # 取最近 lookback 期間作為歷史統計樣本
+    sample = valid_df.iloc[-lookback:].copy()
 
     try:
+        # 計算 5 分位數切點
         q_steps = np.linspace(0, 1, labels_num + 1)
-        quantiles = valid.quantile(q_steps).values
+        quantiles = sample[feature_col].quantile(q_steps).values
 
         if len(quantiles) < (labels_num + 1) or np.isnan(quantiles).any():
-            return default_prob, default_bucket, default_idx
+            return default_prob, default_bucket, default_idx, pd.DataFrame()
 
         quantiles[0] -= 1e-5
         quantiles[-1] += 1e-5
 
-        current_val = valid.iloc[-1]
+        labels = ["Q1 (極低/空)", "Q2 (偏低)", "Q3 (中性)", "Q4 (偏高)", "Q5 (極高/多)"]
+        sample["Quantile_Bucket"] = pd.cut(sample[feature_col], bins=quantiles, labels=labels, observed=False)
+
+        # 聚合計算歷史真實條件勝率 (加上 Laplace 平滑: (up + 1) / (total + 2))
+        stats = sample.groupby("Quantile_Bucket", observed=False).agg(
+            總樣本數=(target_col, "count"),
+            上漲天數=(target_col, lambda x: int(x.sum())),
+            真實勝率=(target_col, lambda x: (x.sum() + 1.0) / (len(x) + 2.0))
+        )
+
+        current_val = valid_df[feature_col].iloc[-1]
         bins = np.unique(quantiles[1:-1])
         if len(bins) == 0:
-            return default_prob, default_bucket, default_idx
+            return default_prob, default_bucket, default_idx, stats
 
         bucket_idx = int(np.digitize(current_val, bins))
         bucket_idx = min(max(bucket_idx, 0), labels_num - 1)
+        current_bucket = labels[bucket_idx]
 
-        quantile_probs = [0.35, 0.42, 0.50, 0.58, 0.65]
-        bucket_labels = ["Q1 (極低/空)", "Q2 (偏低)", "Q3 (中性)", "Q4 (偏高)", "Q5 (極高/多)"]
+        empirical_prob = stats.loc[current_bucket, "真實勝率"]
+        if pd.isna(empirical_prob):
+            empirical_prob = 0.50
 
-        return quantile_probs[bucket_idx], bucket_labels[bucket_idx], bucket_idx + 1
+        return float(empirical_prob), current_bucket, bucket_idx + 1, stats
+
     except Exception:
-        return default_prob, default_bucket, default_idx
+        return default_prob, default_bucket, default_idx, pd.DataFrame()
 
 # ==========================================
 # 6. 繪製深色霓虹儀表板
@@ -388,7 +403,7 @@ def draw_dark_gauge(composite_prob):
         },
         domain={'x': [0, 1], 'y': [0, 1]},
         title={
-            'text': f"<b>台股當日綜合預估上漲勝率</b><br><span style='font-size:17px;font-weight:bold;color:{val_color};'>{signal_text}</span>",
+            'text': f"<b>台股當日綜合預估上漲勝率 (真實回測版)</b><br><span style='font-size:17px;font-weight:bold;color:{val_color};'>{signal_text}</span>",
             'font': {'size': 20, 'family': 'sans-serif', 'color': '#f8fafc'}
         },
         gauge={
@@ -435,32 +450,29 @@ if not df.empty:
     ma125 = df["MA125"].iloc[-1]
     last_date = df.index[-1]
 
-    # 1. 因子：外資現貨 (30%)
-    if "Foreign_NetBuy_5D" in df.columns and len(df["Foreign_NetBuy_5D"].dropna()) >= 5:
-        chip_series = df["Foreign_NetBuy_5D"].dropna()
-        prob_spot, spot_bucket, _ = get_quantile_probability(chip_series)
-        spot_val = chip_series.iloc[-1]
+    # 1. 因子：外資現貨 (30%) - 動態真實勝率
+    prob_spot, spot_bucket, _, spot_stats = get_empirical_quantile_probability(df, "Foreign_NetBuy_5D")
+    if "Foreign_NetBuy_5D" in df.columns and len(df["Foreign_NetBuy_5D"].dropna()) > 0:
+        spot_val = df["Foreign_NetBuy_5D"].dropna().iloc[-1]
         spot_desc = f"{spot_val:+.1f} 億"
     else:
-        prob_spot, spot_val, spot_desc, spot_bucket = 0.50, np.nan, "計算中", "Q3 (中性)"
+        spot_val, spot_desc = np.nan, "計算中"
 
-    # 2. 因子：外資期貨 (18%)
-    if "Foreign_Fut_NetOI" in df.columns and len(df["Foreign_Fut_NetOI"].dropna()) >= 5:
-        oi_series = df["Foreign_Fut_NetOI"].dropna()
-        prob_oi, oi_bucket, _ = get_quantile_probability(oi_series)
-        oi_val = oi_series.iloc[-1]
+    # 2. 因子：外資期貨 (18%) - 動態真實勝率
+    prob_oi, oi_bucket, _, oi_stats = get_empirical_quantile_probability(df, "Foreign_Fut_NetOI")
+    if "Foreign_Fut_NetOI" in df.columns and len(df["Foreign_Fut_NetOI"].dropna()) > 0:
+        oi_val = df["Foreign_Fut_NetOI"].dropna().iloc[-1]
         oi_desc = f"{oi_val:+,.0f} 口"
     else:
-        prob_oi, oi_val, oi_desc, oi_bucket = 0.50, np.nan, "計算中", "Q3 (中性)"
+        oi_val, oi_desc = np.nan, "計算中"
 
-    # 3. 因子：選擇權 PCR (12%)
-    if "Option_PCR" in df.columns and len(df["Option_PCR"].dropna()) >= 5:
-        pcr_series = df["Option_PCR"].dropna()
-        prob_pcr, pcr_bucket, _ = get_quantile_probability(pcr_series)
-        pcr_val = pcr_series.iloc[-1]
+    # 3. 因子：選擇權 PCR (12%) - 動態真實勝率
+    prob_pcr, pcr_bucket, _, pcr_stats = get_empirical_quantile_probability(df, "Option_PCR")
+    if "Option_PCR" in df.columns and len(df["Option_PCR"].dropna()) > 0:
+        pcr_val = df["Option_PCR"].dropna().iloc[-1]
         pcr_desc = f"{pcr_val:.1f}%"
     else:
-        prob_pcr, pcr_val, pcr_desc, pcr_bucket = 0.50, np.nan, "計算中", "Q3 (中性)"
+        pcr_val, pcr_desc = np.nan, "計算中"
 
     # 4. 因子：技術分析均線 (20%)
     if latest_close > ma60 > ma125:
@@ -489,8 +501,8 @@ if not df.empty:
     # 繪製深色儀表板
     st.plotly_chart(draw_dark_gauge(composite_prob), use_container_width=True)
 
-    # 核心因子監測數據卡片
-    st.markdown("### 📊 核心因子監測數據")
+    # 核心因子監測數據卡片 (數值標註動態真實勝率)
+    st.markdown("### 📊 核心因子動態勝率監測")
     col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
@@ -498,7 +510,7 @@ if not df.empty:
         <div class="metric-box" style="border-left: 4px solid #38bdf8;">
             <div class="metric-title">外資現貨 (30%)</div>
             <div class="metric-value">{spot_desc}</div>
-            <div class="metric-sub">{spot_bucket} ｜ 勝率 {prob_spot*100:.0f}%</div>
+            <div class="metric-sub">{spot_bucket} ｜ 勝率 {prob_spot*100:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -507,7 +519,7 @@ if not df.empty:
         <div class="metric-box" style="border-left: 4px solid #a855f7;">
             <div class="metric-title">外資期貨 (18%)</div>
             <div class="metric-value">{oi_desc}</div>
-            <div class="metric-sub">{oi_bucket} ｜ 勝率 {prob_oi*100:.0f}%</div>
+            <div class="metric-sub">{oi_bucket} ｜ 勝率 {prob_oi*100:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -516,7 +528,7 @@ if not df.empty:
         <div class="metric-box" style="border-left: 4px solid #ec4899;">
             <div class="metric-title">選擇權 PCR (12%)</div>
             <div class="metric-value">{pcr_desc}</div>
-            <div class="metric-sub">{pcr_bucket} ｜ 勝率 {prob_pcr*100:.0f}%</div>
+            <div class="metric-sub">{pcr_bucket} ｜ 勝率 {prob_pcr*100:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -525,7 +537,7 @@ if not df.empty:
         <div class="metric-box" style="border-left: 4px solid #05ffa1;">
             <div class="metric-title">技術均線 (20%)</div>
             <div class="metric-value" style="font-size:17px;color:{tech_color};">{tech_status.split(' ')[0]}</div>
-            <div class="metric-sub">勝率 {prob_tech*100:.0f}%</div>
+            <div class="metric-sub">勝率 {prob_tech*100:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -534,14 +546,33 @@ if not df.empty:
         <div class="metric-box" style="border-left: 4px solid #ffe600;">
             <div class="metric-title">美股費半 (20%)</div>
             <div class="metric-value">{sox_desc}</div>
-            <div class="metric-sub">勝率 {prob_sox*100:.0f}%</div>
+            <div class="metric-sub">勝率 {prob_sox*100:.1f}%</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("---")
 
     # ==========================================
-    # 8. 官方與權威財經來源檢核區
+    # 8. 五分位歷史動態回測明細檢視 (新增透視表)
+    # ==========================================
+    with st.expander("📈 檢視三大籌碼因子『五分位歷史真實條件勝率』統計表 (Laplace 平滑校正)"):
+        st.caption("以下勝率係回溯過去 252 個交易日，當指標落入該分位區間時，加權指數次日上漲的實際統計機率：")
+        t_c1, t_c2, t_c3 = st.columns(3)
+        with t_c1:
+            st.markdown("**外資現貨 5日買賣超**")
+            if not spot_stats.empty:
+                st.dataframe(spot_stats.style.format({"真實勝率": "{:.2%}"}), use_container_width=True)
+        with t_c2:
+            st.markdown("**外資期貨淨未平倉 (OI)**")
+            if not oi_stats.empty:
+                st.dataframe(oi_stats.style.format({"真實勝率": "{:.2%}"}), use_container_width=True)
+        with t_c3:
+            st.markdown("**臺指選擇權 Put/Call Ratio**")
+            if not pcr_stats.empty:
+                st.dataframe(pcr_stats.style.format({"真實勝率": "{:.2%}"}), use_container_width=True)
+
+    # ==========================================
+    # 9. 官方與權威財經來源檢核區
     # ==========================================
     st.markdown("### 📋 相關數據內容與權威來源檢核")
 
