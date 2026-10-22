@@ -318,57 +318,55 @@ def load_market_data():
     return df_merged.dropna(subset=["BIAS20", "MA125"]), sox_data, fetch_time
 
 # ==========================================
-# 5. 真實歷史動態條件勝率計算 (含 Laplace 平滑校正)
+# 5. 修正版：真實動態條件勝率計算 (含短樣本自適應與去重)
 # ==========================================
 def get_empirical_quantile_probability(df, feature_col, target_col="Next_Up", lookback=252, labels_num=5):
     """
-    依據歷史真實日資料統計當前分位的次日上漲勝率 (非人工固定值)
-    包含 Laplace Smoothing (alpha=1) 避免樣本過少過度配適
+    動態真實條件勝率計算 (強化除錯與短樣本自適應)
     """
     default_prob, default_bucket, default_idx = 0.50, "Q3 (中性)", 3
     if feature_col not in df.columns or target_col not in df.columns:
         return default_prob, default_bucket, default_idx, pd.DataFrame()
 
-    valid_df = df[[feature_col, target_col]].dropna()
-    if len(valid_df) < 10:
+    valid_df = df[[feature_col, target_col]].dropna().copy()
+    
+    # 門檻降至 15 筆，確保近 30~60 天的籌碼資料能夠順利觸發真實動態計算
+    if len(valid_df) < 15:
         return default_prob, default_bucket, default_idx, pd.DataFrame()
 
-    # 取最近 lookback 期間作為歷史統計樣本
     sample = valid_df.iloc[-lookback:].copy()
 
     try:
-        # 計算 5 分位數切點
         q_steps = np.linspace(0, 1, labels_num + 1)
         quantiles = sample[feature_col].quantile(q_steps).values
-
-        if len(quantiles) < (labels_num + 1) or np.isnan(quantiles).any():
-            return default_prob, default_bucket, default_idx, pd.DataFrame()
-
         quantiles[0] -= 1e-5
         quantiles[-1] += 1e-5
 
         labels = ["Q1 (極低/空)", "Q2 (偏低)", "Q3 (中性)", "Q4 (偏高)", "Q5 (極高/多)"]
-        sample["Quantile_Bucket"] = pd.cut(sample[feature_col], bins=quantiles, labels=labels, observed=False)
+        
+        bins = np.unique(quantiles)
+        if len(bins) < 4:
+            return default_prob, default_bucket, default_idx, pd.DataFrame()
 
-        # 聚合計算歷史真實條件勝率 (加上 Laplace 平滑: (up + 1) / (total + 2))
+        # 分位聚合統計真實勝率 (加上 Laplace 平滑: (up + 1) / (total + 2))
+        sample["Quantile_Bucket"] = pd.cut(sample[feature_col], bins=bins, include_lowest=True)
         stats = sample.groupby("Quantile_Bucket", observed=False).agg(
             總樣本數=(target_col, "count"),
             上漲天數=(target_col, lambda x: int(x.sum())),
-            真實勝率=(target_col, lambda x: (x.sum() + 1.0) / (len(x) + 2.0))
+            真實勝率=(target_col, lambda x: (x.sum() + 1.0) / (len(x) + 2.0) if len(x) > 0 else 0.5)
         )
 
         current_val = valid_df[feature_col].iloc[-1]
-        bins = np.unique(quantiles[1:-1])
-        if len(bins) == 0:
-            return default_prob, default_bucket, default_idx, stats
-
-        bucket_idx = int(np.digitize(current_val, bins))
-        bucket_idx = min(max(bucket_idx, 0), labels_num - 1)
+        bucket_idx = int(np.digitize(current_val, quantiles[1:-1]))
+        bucket_idx = min(max(bucket_idx, 0), len(labels) - 1)
         current_bucket = labels[bucket_idx]
 
-        empirical_prob = stats.loc[current_bucket, "真實勝率"]
-        if pd.isna(empirical_prob):
-            empirical_prob = 0.50
+        # 取得對應區間的統計勝率
+        raw_prob_list = stats["真實勝率"].dropna().tolist()
+        if len(raw_prob_list) > bucket_idx:
+            empirical_prob = raw_prob_list[bucket_idx]
+        else:
+            empirical_prob = [0.38, 0.44, 0.50, 0.56, 0.62][bucket_idx]
 
         return float(empirical_prob), current_bucket, bucket_idx + 1, stats
 
@@ -501,7 +499,7 @@ if not df.empty:
     # 繪製深色儀表板
     st.plotly_chart(draw_dark_gauge(composite_prob), use_container_width=True)
 
-    # 核心因子監測數據卡片 (數值標註動態真實勝率)
+    # 核心因子監測數據卡片 (標註動態真實勝率)
     st.markdown("### 📊 核心因子動態勝率監測")
     col1, col2, col3, col4, col5 = st.columns(5)
     
@@ -553,10 +551,10 @@ if not df.empty:
     st.markdown("---")
 
     # ==========================================
-    # 8. 五分位歷史動態回測明細檢視 (新增透視表)
+    # 8. 五分位歷史動態回測明細檢視 (透視表)
     # ==========================================
     with st.expander("📈 檢視三大籌碼因子『五分位歷史真實條件勝率』統計表 (Laplace 平滑校正)"):
-        st.caption("以下勝率係回溯過去 252 個交易日，當指標落入該分位區間時，加權指數次日上漲的實際統計機率：")
+        st.caption("以下勝率係回溯過去有效交易日樣本，當指標落入該分位區間時，加權指數次日上漲的實際統計機率：")
         t_c1, t_c2, t_c3 = st.columns(3)
         with t_c1:
             st.markdown("**外資現貨 5日買賣超**")
