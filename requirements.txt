@@ -5,3 +5,5 @@ plotly
 tabulate
 yfinance
 numpy
+lxml
+html5lib
