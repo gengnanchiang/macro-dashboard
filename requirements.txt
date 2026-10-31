@@ -8,3 +8,4 @@ numpy
 lxml
 html5lib
 scikit-learn
+openpyxl
