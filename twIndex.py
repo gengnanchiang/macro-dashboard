@@ -2290,11 +2290,6 @@ prob_up, contributions = engine.predict(current_features)
 # -----------------------------------------------------------------------------
 st.title("🎯 TAIEX 台灣加權指數次日漲跌機率監控儀表 (260日OOS樣本外檢驗版)")
 
-# 期現貨價差與獨立性校驗區塊
-if not data["hist_df"].empty:
-    render_basis_integrity_check(data["hist_df"])
-    st.markdown("---")
-
 m_desc = (
     f"期現水準交互動態 MLE 配適 (訓練樣本: 前 {len(train_sample_df)} 營業日, 訓練準確率: {engine.fit_accuracy:.1f}% | 樣本外測試: 最近 10 個營業日)"
     if engine.fit_accuracy is not None
