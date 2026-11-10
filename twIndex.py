@@ -1973,7 +1973,7 @@ chip_transform_mode = st.sidebar.selectbox(
         "原始線性水準項",
         "雙對稱對數 (Signed-Log: sign(x)*ln(1+|x|))",
     ],
-    index=0,
+    index=1,
     help="預設採用原始線性水準項，亦可切換為雙對稱對數以壓縮厚尾極值",
 )
 
