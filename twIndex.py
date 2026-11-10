@@ -1963,7 +1963,7 @@ st.sidebar.markdown("---")
 model_mode = st.sidebar.radio(
     "權重計算模式",
     ["固定專家權重", "期現水準交互動態滾動配適 (Interaction MLE)"],
-    index=1,
+    index=2,
     help="第2因子採用外資期指留倉淨額(tx_foreign_oi)，第3因子採用期現貨水準交乘項",
 )
 
