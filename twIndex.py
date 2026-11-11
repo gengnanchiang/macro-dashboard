@@ -1415,9 +1415,9 @@ def optimize_thresholds_fixed_days(
     probs_pct: list,
     eval_df: pd.DataFrame,
     acc_pct: float,
-    bull_range: Tuple[int, int] = (50, 75),
-    bear_range: Tuple[int, int] = (25, 50),
-    step: int = 5,
+    bull_range: Tuple[int, int] = (50, 80),
+    bear_range: Tuple[int, int] = (20, 50),
+    step: int = 2,
     cost_rate_pct: float = 0.03,
 ) -> Tuple[int, int, float, float, float, pd.DataFrame, pd.DataFrame]:
     bull_steps = list(range(bull_range[0], bull_range[1] + 1, step))
