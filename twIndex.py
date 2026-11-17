@@ -1694,7 +1694,7 @@ def simulate_day_trading_pnl(
     threshold_bull: int,
     threshold_bear: int,
     cost_rate_pct: float,
-    intraday_stop_dd_pct: float = 2.0,
+    intraday_stop_dd_pct: float = 3.0,
 ) -> Tuple[list, list, list, list, list, list, int, int]:
     """
     波段留倉策略結算邏輯（附加盤中累計損益下滑 2% 即刻啟動停利與停損機制）：
@@ -1702,9 +1702,9 @@ def simulate_day_trading_pnl(
     2. 當預測訊號不連貫 (S_t != S_{t-1}) 時，前期留倉部位於當日（預測日 t）開盤價 (TXF Open_t) 平倉：
        - 當日 (t) 開盤實現隔夜跳空段損益 (Close_{t-1} -> Open_t) 並扣除出場單趟摩擦成本；
        - 若當日同時觸發反向新訊號 (S_t != 0)，則於當日開盤價 (Open_t) 同步反手建倉。
-    3. 【盤中部位累計損益下滑 2% 停利/停損機制】：
+    3. 【盤中部位累計損益下滑 3% 停利/停損機制】：
        - 追蹤自波段建倉價 (entry_price) 起算之歷史最高累計毛報酬峰值 (peak_cum_ret_pct)，並於每日開盤價先更新峰值。
-       - 若當日盤中最低價 (TXF_Low，多單) 或最高價 (TXF_High，空單) 使得部位累計毛損益較最高峰值 (或自當日開盤起算) 下滑達 2% (intraday_stop_dd_pct) 以上，
+       - 若當日盤中最低價 (TXF_Low，多單) 或最高價 (TXF_High，空單) 使得部位累計毛損益較最高峰值 (或自當日開盤起算) 下滑達 3% (intraday_stop_dd_pct) 以上，
          即刻於盤中觸發價位啟動「移動停利」或「停損平倉」，扣除平倉單趟摩擦成本，當日收盤回歸空手 (prev_pos = 0)，鎖定波段獲利並嚴控下行風險！
     """
     signal_types = []
