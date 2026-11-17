@@ -1793,7 +1793,7 @@ def simulate_day_trading_pnl(
                         )
                         peak_cum_ret = max(peak_cum_ret, open_cum_ret)
 
-            # (B) 處理當日 (預測日 i) 訊號之新進場或續抱盤中段，並檢核「盤中累計損益下滑 2% 停利/停損機制」
+            # (B) 處理當日 (預測日 i) 訊號之新進場或續抱盤中段，並檢核「盤中累計損益下滑 3% 停利/停損機制」
             if signal_pos != 0:
                 is_new_entry = (signal_pos != prev_pos)
                 if is_new_entry:
@@ -1811,7 +1811,7 @@ def simulate_day_trading_pnl(
 
                 cum_drawdown = peak_cum_ret - worst_cum_ret
 
-                # 若盤中部位累計損益較最高峰值下滑 >= 2%，或當日盤中較開盤下滑 >= 2%，即刻啟動停利/停損平倉！
+                # 若盤中部位累計損益較最高峰值下滑 >= 2%，或當日盤中較開盤下滑 >= 3%，即刻啟動停利/停損平倉！
                 if intraday_stop_dd_pct > 0 and (
                     cum_drawdown >= intraday_stop_dd_pct - 1e-9
                     or intraday_worst_drop >= intraday_stop_dd_pct - 1e-9
@@ -1863,7 +1863,7 @@ def simulate_day_trading_pnl(
                     entry_price = np.nan
                     peak_cum_ret = 0.0
                 else:
-                    # 未觸發盤中 2% 下滑停損/停利，正常持有至收盤
+                    # 未觸發盤中 3% 下滑停損/停利，正常持有至收盤
                     if signal_pos == 1:
                         intraday_ret = ((cp - op) / op) * 100.0
                         best_cum_today = ((hp - entry_price) / entry_price) * 100.0
@@ -1935,13 +1935,13 @@ def extract_day_trades(
     high_prices: Optional[list] = None,
     low_prices: Optional[list] = None,
     signal_types: Optional[list] = None,
-    intraday_stop_dd_pct: float = 2.0,
+    intraday_stop_dd_pct: float = 3.0,
 ) -> pd.DataFrame:
     """
     擷取波段留倉逐筆完整交易明細（支援盤中累計損益下滑 2% 即刻啟動停利與停損平倉）：
     - 訊號觸發當日以開盤價 (TXF Open) 建倉；
     - 若後續交易日買賣訊號一致且未觸發盤中 2% 下滑停利/停損則留倉續抱（累計持有天數）；
-    - 若當日盤中部位累計損益下滑達 2% 以上，即刻於盤中觸發價位執行「移動停利」或「停損平倉」；
+    - 若當日盤中部位累計損益下滑達 3% 以上，即刻於盤中觸發價位執行「移動停利」或「停損平倉」；
     - 當預測訊號不連貫時，以該預測日之開盤價 (TXF Open) 正式平倉結算（若至樣本最後一日仍持倉，則以期末收盤價標記為留倉進行中）。
     """
     trades = []
@@ -2015,7 +2015,7 @@ def extract_day_trades(
             open_cum = ((op - entry_p) / entry_p) * 100.0 if active_trade["dir"] == 1 else ((entry_p - op) / entry_p) * 100.0
             active_trade["peak_cum_ret"] = max(active_trade["peak_cum_ret"], open_cum)
 
-        # (3) 檢查當日是否觸發盤中 2% 下滑停利/停損平倉
+        # (3) 檢查當日是否觸發盤中 3% 下滑停利/停損平倉
         if active_trade is not None and (is_intraday_stopped or pos == 0):
             entry_p = active_trade["entry_price"]
             t_dir = active_trade["dir"]
