@@ -114,6 +114,45 @@ TW_HOLIDAYS_MAP = {
 }
 
 US_MACRO_EVENTS_MAP = {
+    # 2025 年 FOMC 利率決策會議發布日
+    datetime.date(2025, 1, 29): "⚡ FOMC 利率決策公布",
+    datetime.date(2025, 3, 19): "⚡ FOMC 利率決策與經濟展望",
+    datetime.date(2025, 5, 7): "⚡ FOMC 利率決策公布",
+    datetime.date(2025, 6, 18): "⚡ FOMC 利率決策與點陣圖",
+    datetime.date(2025, 7, 30): "⚡ FOMC 利率決策公布",
+    datetime.date(2025, 9, 17): "⚡ FOMC 利率決策與點陣圖",
+    datetime.date(2025, 10, 29): "⚡ FOMC 利率決策公布",
+    datetime.date(2025, 12, 10): "⚡ FOMC 利率決策與點陣圖",
+    # 2025 年 美國 CPI 通膨報告發布日 (BLS 官方日程與實際發布日)
+    datetime.date(2025, 1, 15): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 2, 12): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 3, 12): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 4, 10): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 5, 13): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 6, 11): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 7, 15): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 8, 12): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 9, 11): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 10, 15): "🚨 美國 CPI 通膨發布 (原定日程)",
+    datetime.date(2025, 10, 24): "🚨 美國 CPI 通膨發布",
+    datetime.date(2025, 11, 13): "🚨 美國 CPI 通膨發布 (原定日程)",
+    datetime.date(2025, 12, 18): "🚨 美國 CPI 通膨發布",
+    # 2025 年 美國非農就業報告 (NFP) 發布日 (BLS 官方日程與實際發布日)
+    datetime.date(2025, 1, 10): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 2, 7): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 3, 7): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 4, 4): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 5, 2): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 6, 6): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 7, 3): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 8, 1): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 9, 5): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 10, 3): "💼 美國非農就業報告 (NFP) (原定日程)",
+    datetime.date(2025, 11, 7): "💼 美國非農就業報告 (NFP) (原定日程)",
+    datetime.date(2025, 11, 20): "💼 美國非農就業報告 (NFP)",
+    datetime.date(2025, 12, 5): "💼 美國非農就業報告 (NFP) (原定日程)",
+    datetime.date(2025, 12, 16): "💼 美國非農就業報告 (NFP)",
+    # 2026 年 FOMC 利率決策會議發布日
     datetime.date(2026, 1, 28): "⚡ FOMC 利率決策公布",
     datetime.date(2026, 3, 18): "⚡ FOMC 利率決策與經濟展望",
     datetime.date(2026, 5, 6): "⚡ FOMC 利率決策公布",
@@ -122,6 +161,7 @@ US_MACRO_EVENTS_MAP = {
     datetime.date(2026, 9, 16): "⚡ FOMC 利率決策與點陣圖",
     datetime.date(2026, 10, 28): "⚡ FOMC 利率決策公布",
     datetime.date(2026, 12, 9): "⚡ FOMC 利率決策與點陣圖",
+    # 2026 年 美國 CPI 通膨報告發布日
     datetime.date(2026, 1, 14): "🚨 美國 CPI 通膨發布",
     datetime.date(2026, 2, 13): "🚨 美國 CPI 通膨發布",
     datetime.date(2026, 3, 11): "🚨 美國 CPI 通膨發布",
@@ -134,6 +174,7 @@ US_MACRO_EVENTS_MAP = {
     datetime.date(2026, 10, 14): "🚨 美國 CPI 通膨發布",
     datetime.date(2026, 11, 12): "🚨 美國 CPI 通膨發布",
     datetime.date(2026, 12, 10): "🚨 美國 CPI 通膨發布",
+    # 2026 年 美國非農就業報告 (NFP) 發布日
     datetime.date(2026, 1, 9): "💼 美國非農就業報告 (NFP)",
     datetime.date(2026, 2, 6): "💼 美國非農就業報告 (NFP)",
     datetime.date(2026, 3, 6): "💼 美國非農就業報告 (NFP)",
@@ -147,6 +188,7 @@ US_MACRO_EVENTS_MAP = {
     datetime.date(2026, 11, 6): "💼 美國非農就業報告 (NFP)",
     datetime.date(2026, 12, 4): "💼 美國非農就業報告 (NFP)",
 }
+
 
 
 def check_is_taiwan_holiday(d: datetime.date) -> Tuple[bool, str]:
@@ -259,20 +301,6 @@ class MarketDataPipeline:
         self.taifex_parquet_path = "taifex_chip_520d.parquet"
         self.twse_parquet_path = "twse_chip_520d.parquet"
         self.txf_price_parquet_path = "txf_prices_520d.parquet"
-
-        # 若環境中已有舊版 260d 快取且尚未建立 520d 快取，先自動繼承既有數據以大幅縮短首次啟動時間
-        legacy_pairs = [
-            ("taifex_chip_260d.parquet", self.taifex_parquet_path),
-            ("twse_chip_260d.parquet", self.twse_parquet_path),
-            ("txf_prices_260d.parquet", self.txf_price_parquet_path),
-        ]
-        for old_p, new_p in legacy_pairs:
-            if os.path.exists(old_p) and not os.path.exists(new_p):
-                try:
-                    df_legacy = pd.read_parquet(old_p)
-                    df_legacy.to_parquet(new_p)
-                except Exception:
-                    pass
 
     def get_cache_file_info(self, file_path: str) -> Dict[str, str]:
         if not os.path.exists(file_path):
@@ -1241,26 +1269,60 @@ class MarketDataPipeline:
                 "TWII_Close": twii_close,
             }).dropna(subset=["TWII_Open", "TWII_Close"])
 
+            if hasattr(tw_raw.index, "tz") and tw_raw.index.tz is not None:
+                tw_raw.index = tw_raw.index.tz_convert("Asia/Taipei").tz_localize(None)
             tw_raw.index = pd.to_datetime([d.date() for d in tw_raw.index])
+            tw_raw = tw_raw[~tw_raw.index.duplicated(keep="last")].sort_index()
 
-            valid_tw_dates = [
-                d
-                for d in tw_raw.index
-                if d.weekday() < 5 and d.date() not in TW_HOLIDAYS_MAP
-            ]
-            tw_raw = tw_raw.loc[valid_tw_dates]
+            # 建立完整預期台股交易日曆，避免 Yahoo Finance 漏失特定台股交易日 (如 2026-11-16)
+            expected_tw_dates = []
+            curr_cal = start_date_obj
+            while curr_cal <= target_date:
+                if curr_cal.weekday() < 5 and curr_cal not in TW_HOLIDAYS_MAP:
+                    expected_tw_dates.append(pd.to_datetime(curr_cal))
+                curr_cal += datetime.timedelta(days=1)
 
-            # 2. 獲取台指期近月獨立開盤/收盤價/結算價
-            txf_prices_df = self.fetch_txf_prices_historical_parquet(start_date_obj, target_date, tw_raw=tw_raw)
+            tw_calendar_dummy = pd.DataFrame(index=expected_tw_dates)
+
+            # 2. 獲取台指期近月獨立開盤/收盤價/結算價（傳入完整台股預期交易日曆，強制檢核並補齊所有營業日）
+            txf_prices_df = self.fetch_txf_prices_historical_parquet(
+                start_date_obj, target_date, tw_raw=tw_calendar_dummy
+            )
             if not txf_prices_df.empty:
+                txf_prices_df.index = pd.to_datetime(txf_prices_df.index).normalize()
+                txf_prices_df = txf_prices_df[~txf_prices_df.index.duplicated(keep="last")].sort_index()
+
+                # 【關鍵修正 3】：將 tw_raw 與期交所真實交易日取聯集 (Outer Join)
+                # 若 Yahoo Finance 漏失某台股交易日 (如 2026-11-16)，自動由期交所官方日盤行情精準補齊！
+                union_idx = tw_raw.index.union(txf_prices_df.index).sort_values()
+                union_idx = [
+                    d for d in union_idx
+                    if d.weekday() < 5 and d.date() not in TW_HOLIDAYS_MAP and start_date_obj <= d.date() <= target_date
+                ]
+                tw_raw = tw_raw.reindex(union_idx)
                 tw_raw = tw_raw.join(txf_prices_df, how="left")
+
+                # 當 Yahoo Finance 缺失某日加權指數時，以期交所當日近月臺指期真實價格補齊
+                tw_raw["TWII_Open"] = tw_raw["TWII_Open"].fillna(tw_raw["TXF_Open"])
+                tw_raw["TWII_High"] = tw_raw["TWII_High"].fillna(tw_raw["TXF_High"])
+                tw_raw["TWII_Low"] = tw_raw["TWII_Low"].fillna(tw_raw["TXF_Low"])
+                tw_raw["TWII_Close"] = tw_raw["TWII_Close"].fillna(tw_raw["TXF_Close"])
+
+                # 反之若極少數早期日期無期貨報價，則以加權指數備援
                 tw_raw["TXF_Open"] = tw_raw["TXF_Open"].fillna(tw_raw["TWII_Open"])
                 tw_raw["TXF_High"] = tw_raw["TXF_High"].fillna(tw_raw["TWII_High"])
                 tw_raw["TXF_Low"] = tw_raw["TXF_Low"].fillna(tw_raw["TWII_Low"])
                 tw_raw["TXF_Close"] = tw_raw["TXF_Close"].fillna(tw_raw["TWII_Close"])
                 tw_raw["TXF_Settle"] = tw_raw["TXF_Settle"].fillna(tw_raw["TXF_Close"])
                 tw_raw["TXF_Volume"] = tw_raw["TXF_Volume"].fillna(0.0)
+                tw_raw = tw_raw.dropna(subset=["TWII_Open", "TWII_Close", "TXF_Open", "TXF_Close"])
             else:
+                valid_tw_dates = [
+                    d
+                    for d in tw_raw.index
+                    if d.weekday() < 5 and d.date() not in TW_HOLIDAYS_MAP
+                ]
+                tw_raw = tw_raw.loc[valid_tw_dates]
                 st.warning("⚠️ 暫無法自期交所取得完整歷史期貨行情，已自動以加權指數行情備援。")
                 tw_raw["TXF_Open"] = tw_raw["TWII_Open"]
                 tw_raw["TXF_High"] = tw_raw["TWII_High"]
@@ -1269,21 +1331,49 @@ class MarketDataPipeline:
                 tw_raw["TXF_Settle"] = tw_raw["TWII_Close"]
                 tw_raw["TXF_Volume"] = 0.0
 
-            us_raw = pd.DataFrame({
-                "usdtwd_ret": usdtwd_close.pct_change() * 100.0,
-                "sox_ret": sox_close.pct_change() * 100.0,
-                "tsm_ret": tsm_close.pct_change() * 100.0,
+            # 【關鍵修正 1】：美股與匯率獨立清理並對價格先做 ffill() 後再計算報酬率，
+            # 徹底消除美股休市日或盤前未開盤造成的空白 (NaN)，確保 100% 以前一美股交易日真實數據補齊！
+            fx_df = pd.DataFrame({"usdtwd_close": usdtwd_close}).dropna()
+            if hasattr(fx_df.index, "tz") and fx_df.index.tz is not None:
+                fx_df.index = fx_df.index.tz_convert("America/New_York").tz_localize(None)
+            fx_df.index = pd.to_datetime([d.date() for d in fx_df.index])
+            fx_df = fx_df[~fx_df.index.duplicated(keep="last")].sort_index()
+            fx_df["usdtwd_ret"] = fx_df["usdtwd_close"].pct_change() * 100.0
+            fx_df["usdtwd_ret"] = fx_df["usdtwd_ret"].ffill().fillna(0.0)
+
+            us_mkt_close = pd.DataFrame({
+                "sox_close": sox_close,
+                "tsm_close": tsm_close,
                 "vix_close": vix_close,
             }).dropna(how="all")
-            us_raw.index = pd.to_datetime([d.date() for d in us_raw.index])
+            if hasattr(us_mkt_close.index, "tz") and us_mkt_close.index.tz is not None:
+                us_mkt_close.index = us_mkt_close.index.tz_convert("America/New_York").tz_localize(None)
+            us_mkt_close.index = pd.to_datetime([d.date() for d in us_mkt_close.index])
+            us_mkt_close = us_mkt_close[~us_mkt_close.index.duplicated(keep="last")].sort_index()
+
+            # 僅保留美股真實有效交易日（先剔除美股休市但誤入的完全空列，再對個別缺值用前一交易日 ffill 補齊）
+            us_mkt_close = us_mkt_close.dropna(subset=["sox_close", "tsm_close"], how="all")
+            us_mkt_close = us_mkt_close.ffill()
+
+            us_raw = pd.DataFrame(index=us_mkt_close.index)
+            us_raw["sox_ret"] = us_mkt_close["sox_close"].pct_change() * 100.0
+            us_raw["tsm_ret"] = us_mkt_close["tsm_close"].pct_change() * 100.0
+            us_raw["vix_close"] = us_mkt_close["vix_close"].ffill()
+            us_raw = us_raw.dropna(subset=["sox_ret", "tsm_ret", "vix_close"])
 
             aligned_rows = []
             for dt in tw_raw.index:
                 matched_us = us_raw[us_raw.index <= dt]
+                matched_fx = fx_df[fx_df.index <= dt]
                 if not matched_us.empty:
                     last_us = matched_us.iloc[-1]
                     tw_row = tw_raw.loc[dt]
                     last_us_dt = matched_us.index[-1].date()
+                    fx_ret_val = (
+                        float(matched_fx.iloc[-1]["usdtwd_ret"])
+                        if not matched_fx.empty
+                        else 0.0
+                    )
 
                     aligned_rows.append({
                         "date": dt,
@@ -1297,7 +1387,7 @@ class MarketDataPipeline:
                         "TXF_Close": float(tw_row["TXF_Close"]),
                         "TXF_Settle": float(tw_row.get("TXF_Settle", tw_row["TXF_Close"])),
                         "TXF_Volume": float(tw_row.get("TXF_Volume", 0.0)),
-                        "usdtwd_ret": float(last_us.get("usdtwd_ret", 0.0)),
+                        "usdtwd_ret": fx_ret_val,
                         "sox_ret": float(last_us["sox_ret"]),
                         "tsm_ret": float(last_us["tsm_ret"]),
                         "vix_close": float(last_us["vix_close"]),
@@ -1328,6 +1418,10 @@ class MarketDataPipeline:
             )
             full_df["gap_filled"] = gap_up_filled | gap_down_filled
 
+            full_df["twii_ret"] = (
+                (full_df["TWII_Close"] - full_df["prev_twii_close"])
+                / full_df["prev_twii_close"]
+            ) * 100.0
             full_df["ret_open_to_close"] = (
                 (full_df["TWII_Close"] - full_df["TWII_Open"])
                 / full_df["TWII_Open"]
@@ -1430,30 +1524,46 @@ class TaiexLogisticEngine:
         hist_twse: Optional[pd.DataFrame] = None,
         hist_taifex: Optional[pd.DataFrame] = None,
     ) -> bool:
-        """專用於傳入之訓練樣本進行 10 變量 Logistic 訓練"""
+        """
+        專用於傳入之訓練樣本進行 10 變量 Logistic 訓練（消除內生性問題版）：
+        - 被解釋變數 (應變數) y_t：當日 (t) 台灣加權指數漲跌方向 (TWII_Close_t > TWII_Close_{t-1} 為漲=1，否則為跌=0)
+        - 解釋變數 (自變數) X_{t-1}：嚴格採用前一交易日 (t-1) 之美台相關數據（外資現貨、外資期指OI、匯率、費半、TSM ADR、VIX、前日跳空與護盤狀態）
+          藉由 .shift(1) 確保模型訓練與門檻尋優完全建立在「前一交易日已知資訊」預測「當日加權指數漲跌」之跨期因果關係上。
+        """
         if len(train_sample) < 40:
             return False
 
         self.fit_sample_size = len(train_sample)
         train_df = train_sample.copy()
-        train_df["y"] = (train_df["ret_open_to_close"] > 0).astype(int)
+        # 被解釋變數 y：以當日 (t) 台灣加權指數收盤相較於前一交易日收盤之漲跌為依據 (漲=1，跌=0)
+        if "prev_twii_close" in train_df.columns:
+            train_df["y"] = (train_df["TWII_Close"] > train_df["prev_twii_close"]).astype(int)
+        else:
+            train_df["y"] = (train_df["TWII_Close"].diff() > 0).astype(int)
 
+        # 【關鍵修正 2】：所有台美自變數嚴格採用前一交易日 (t-1) 數據 (.shift(1))，消除同期內生性
         features_us = ["usdtwd_ret", "sox_ret", "tsm_ret", "vix_close", "gap_ret"]
         X_raw = pd.DataFrame(index=train_df.index)
         for col in features_us:
-            X_raw[col] = train_df[col] if col in train_df.columns else 0.0
+            if col in train_df.columns:
+                X_raw[col] = train_df[col].ffill().shift(1).bfill()
+            else:
+                X_raw[col] = 0.0
 
-        # 國安基金進場護盤期間虛擬變數
-        X_raw["nsf_active"] = [
-            float(check_is_nsf_active(d)) for d in train_df.index
-        ]
+        # 國安基金進場護盤期間虛擬變數（採用前一交易日 t-1 已確立之護盤狀態）
+        nsf_series = pd.Series(
+            [float(check_is_nsf_active(d)) for d in train_df.index],
+            index=train_df.index,
+        )
+        X_raw["nsf_active"] = nsf_series.shift(1).bfill()
 
         if (
             hist_twse is not None
             and not hist_twse.empty
             and "foreign_net" in hist_twse.columns
         ):
-            f_series = hist_twse["foreign_net"].reindex(train_df.index).fillna(0.0)
+            twse_clean = hist_twse[~hist_twse.index.duplicated(keep="last")].sort_index()
+            f_series = twse_clean["foreign_net"].reindex(train_df.index).ffill().shift(1).bfill().fillna(0.0)
         else:
             f_series = pd.Series(0.0, index=train_df.index)
 
@@ -1462,7 +1572,8 @@ class TaiexLogisticEngine:
             and not hist_taifex.empty
             and "tx_foreign_oi" in hist_taifex.columns
         ):
-            tx_series = hist_taifex["tx_foreign_oi"].reindex(train_df.index).fillna(-12000.0)
+            taifex_clean = hist_taifex[~hist_taifex.index.duplicated(keep="last")].sort_index()
+            tx_series = taifex_clean["tx_foreign_oi"].reindex(train_df.index).ffill().shift(1).bfill().fillna(-12000.0)
         else:
             tx_series = pd.Series(-12000.0, index=train_df.index)
 
@@ -1617,7 +1728,7 @@ class TaiexLogisticEngine:
 
 
 # -----------------------------------------------------------------------------
-# 3. 臺指期波段留倉會計結算與門檻尋優 (訊號一致則留倉，不連貫時以預測日開盤價平倉)
+# 3. 臺指期波段留倉會計結算與門檻尋優 (訊號一致則留倉，不連貫時以預測日開盤價平倉；僅停損、不停利)
 # -----------------------------------------------------------------------------
 def simulate_day_trading_pnl(
     probs_pct: list,
@@ -1625,14 +1736,18 @@ def simulate_day_trading_pnl(
     threshold_bull: int,
     threshold_bear: int,
     cost_rate_pct: float,
+    stop_loss_pct: float = 0.0,
 ) -> Tuple[list, list, list, list, list, list, int, int]:
     """
-    波段留倉策略結算邏輯：
-    1. 若買賣訊號一致 (S_t == S_{t-1} != 0) 則留倉續抱，不重複進出扣費。
+    波段留倉策略結算邏輯（純停損、不停利機制）：
+    1. 若買賣訊號一致 (S_t == S_{t-1} != 0) 則留倉續抱，不重複進出扣費（獲利部位不設停利上限，讓獲利奔跑直到訊號不連貫才於預測日開盤平倉）。
     2. 當預測訊號不連貫 (S_t != S_{t-1}) 時，前期留倉部位於當日（預測日 t）開盤價 (TXF Open_t) 平倉：
-       - 前一日 (t-1) 盤中段 (Open_{t-1} -> Close_{t-1}) 已於 t-1 日盯市認列；
        - 當日 (t) 開盤實現隔夜跳空段損益 (Close_{t-1} -> Open_t) 並扣除出場單趟摩擦成本；
-       - 若當日同時觸發反向新訊號 (S_t != 0)，則於當日開盤價 (Open_t) 同步反手建倉，認列當日盤中段 (Open_t -> Close_t) 並扣除進場單趟摩擦成本。
+       - 若當日同時觸發反向新訊號 (S_t != 0)，則於當日開盤價 (Open_t) 同步反手建倉。
+    3. 【純停損機制（不停利）】：
+       - 當開啟停損 (stop_loss_pct > 0) 時，僅針對自波段建倉價 (entry_price) 起算之累計虧損 (或當日盤中相對開盤虧損) 達 stop_loss_pct% 以上時，
+         即刻啟動「停損平倉」（若當日開盤跳空已直接跌破波段停損價，則於開盤價即刻停損；否則於盤中觸及停損價位時即刻停損平倉），
+         扣除平倉單趟摩擦成本，當日收盤部位歸零 (end_pos = 0)。絕不因高點回落而提前停利！
     """
     signal_types = []
     positions = []
@@ -1645,37 +1760,52 @@ def simulate_day_trading_pnl(
 
     open_prices = eval_df["TXF_Open"].tolist()
     close_prices = eval_df["TXF_Close"].tolist()
+    high_prices = (
+        eval_df["TXF_High"].tolist()
+        if "TXF_High" in eval_df.columns
+        else [max(o, c) for o, c in zip(open_prices, close_prices)]
+    )
+    low_prices = (
+        eval_df["TXF_Low"].tolist()
+        if "TXF_Low" in eval_df.columns
+        else [min(o, c) for o, c in zip(open_prices, close_prices)]
+    )
     n = len(probs_pct)
 
     prev_pos = 0
     prev_cp = np.nan
+    entry_price = np.nan
 
     for i in range(n):
         p = probs_pct[i]
         op = open_prices[i]
         cp = close_prices[i]
+        hp = high_prices[i] if not np.isnan(high_prices[i]) else max(op, cp)
+        lp = low_prices[i] if not np.isnan(low_prices[i]) else min(op, cp)
         is_pending = np.isnan(cp) or np.isnan(op)
 
         if p >= threshold_bull:
             sig_base = "📈 多方訊號"
-            curr_pos = 1
+            signal_pos = 1
         elif p <= threshold_bear:
             sig_base = "📉 空方訊號"
-            curr_pos = -1
+            signal_pos = -1
         else:
             sig_base = "⚪ 觀望訊號"
-            curr_pos = 0
+            signal_pos = 0
 
         if is_pending:
             gross_ret = 0.0
             cost = 0.0
             net_ret = 0.0
+            end_pos = 0
             sig = f"{sig_base} (待結算)"
             status = "⏳ 待當日開收盤結算"
         else:
             gross_ret = 0.0
             cost = 0.0
             status_parts = []
+            end_pos = signal_pos
 
             # (A) 處理前期留倉部位在當日 (預測日 i) 開盤之平倉或續抱隔夜段 (Close_{i-1} -> Open_i)
             if prev_pos != 0 and not np.isnan(prev_cp) and prev_cp > 0:
@@ -1685,55 +1815,119 @@ def simulate_day_trading_pnl(
                     overnight_ret = ((prev_cp - op) / prev_cp) * 100.0
                 gross_ret += overnight_ret
 
-                if curr_pos != prev_pos:
+                if signal_pos != prev_pos:
                     # 預測訊號不連貫：於預測日開盤價平倉 (扣除平倉單趟成本)
                     cost += cost_rate_pct
                     dir_str = "多" if prev_pos == 1 else "空"
                     status_parts.append(f"🔄 開盤平{dir_str}倉({op:,.1f}|隔夜{overnight_ret:+.2f}%)")
+                    entry_price = np.nan
                 else:
                     # 買賣訊號一致：繼續留倉 (無平倉成本)
                     dir_str = "多" if prev_pos == 1 else "空"
                     status_parts.append(f"🔒 {dir_str}單留倉續抱(隔夜{overnight_ret:+.2f}%)")
 
-            # (B) 處理當日 (預測日 i) 訊號之新進場或續抱盤中段 (Open_i -> Close_i)
-            if curr_pos != 0:
-                if curr_pos == 1:
-                    intraday_ret = ((cp - op) / op) * 100.0
-                else:
-                    intraday_ret = ((op - cp) / op) * 100.0
-                gross_ret += intraday_ret
-
-                if curr_pos != prev_pos:
-                    # 新訊號建倉或反手建倉：於預測日開盤價進場 (扣除進場單趟成本)
+            # (B) 處理當日 (預測日 i) 訊號之新進場或續抱盤中段，並檢核「純停損機制（不停利）」
+            if signal_pos != 0:
+                is_new_entry = (signal_pos != prev_pos)
+                if is_new_entry:
                     cost += cost_rate_pct
-                    dir_str = "多" if curr_pos == 1 else "空"
-                    act_prefix = "⚡ 反手進" if prev_pos != 0 else "⚡ 開盤進"
-                    status_parts.append(f"{act_prefix}{dir_str}倉({op:,.1f}→{cp:,.1f}|盤中{intraday_ret:+.2f}%)")
-                    sig = f"{sig_base} (反手留倉)" if prev_pos != 0 else f"{sig_base} (新進留倉)"
+                    entry_price = op
+
+                # 計算當日盤中最不利價位 (Worst Excursion) 下相對於建倉價之累計報酬率與單日盤中虧損率
+                if signal_pos == 1:
+                    worst_cum_ret = ((lp - entry_price) / entry_price) * 100.0
+                    intraday_worst_ret = ((lp - op) / op) * 100.0
                 else:
-                    status_parts.append(f"盤中續抱({op:,.1f}→{cp:,.1f}|{intraday_ret:+.2f}%)")
-                    sig = f"{sig_base} (一致續抱)"
+                    worst_cum_ret = ((entry_price - hp) / entry_price) * 100.0
+                    intraday_worst_ret = ((op - hp) / op) * 100.0
+
+                # 【純停損檢核（絕不停利）】：僅當累計損益虧損達 -stop_loss_pct% (或當日盤中虧損達 -stop_loss_pct%) 時才啟動停損平倉！
+                if stop_loss_pct > 0 and (
+                    worst_cum_ret <= -stop_loss_pct + 1e-9
+                    or intraday_worst_ret <= -stop_loss_pct + 1e-9
+                ):
+                    if worst_cum_ret <= -stop_loss_pct + 1e-9:
+                        if signal_pos == 1:
+                            stop_price_cum = entry_price * (1.0 - stop_loss_pct / 100.0)
+                            stop_price_day = op * (1.0 - stop_loss_pct / 100.0)
+                            stop_price = max(stop_price_cum, stop_price_day)
+                            # 若開盤跳空已直接跌破停損價，則於開盤價即刻停損
+                            stop_price = min(stop_price, op)
+                        else:
+                            stop_price_cum = entry_price * (1.0 + stop_loss_pct / 100.0)
+                            stop_price_day = op * (1.0 + stop_loss_pct / 100.0)
+                            stop_price = min(stop_price_cum, stop_price_day)
+                            stop_price = max(stop_price, op)
+                    else:
+                        if signal_pos == 1:
+                            stop_price = op * (1.0 - stop_loss_pct / 100.0)
+                        else:
+                            stop_price = op * (1.0 + stop_loss_pct / 100.0)
+
+                    if signal_pos == 1:
+                        intraday_ret = ((stop_price - op) / op) * 100.0
+                    else:
+                        intraday_ret = ((op - stop_price) / op) * 100.0
+
+                    gross_ret += intraday_ret
+                    # 觸發停損平倉，加計出場單趟摩擦成本
+                    cost += cost_rate_pct
+                    dir_str = "多" if signal_pos == 1 else "空"
+
+                    if is_new_entry:
+                        act_prefix = "⚡ 反手進" if prev_pos != 0 else "⚡ 開盤進"
+                        status_parts.append(
+                            f"{act_prefix}{dir_str}({op:,.1f}) ➔ 🛡️觸及-{stop_loss_pct:.1f}%停損平倉({stop_price:,.1f}|當日{intraday_ret:+.2f}%)"
+                        )
+                    else:
+                        status_parts.append(
+                            f"🛡️ 觸及-{stop_loss_pct:.1f}%即刻停損平倉({op:,.1f}→{stop_price:,.1f}|當日{intraday_ret:+.2f}%)"
+                        )
+
+                    sig = f"{sig_base} (🛡️-{stop_loss_pct:.1f}%停損平倉)"
+                    # 盤中已停損出場，收盤部位歸零
+                    end_pos = 0
+                    entry_price = np.nan
+                else:
+                    # 未觸發停損（且策略不設停利），正常持有至收盤讓獲利奔跑
+                    if signal_pos == 1:
+                        intraday_ret = ((cp - op) / op) * 100.0
+                    else:
+                        intraday_ret = ((op - cp) / op) * 100.0
+
+                    gross_ret += intraday_ret
+
+                    if is_new_entry:
+                        dir_str = "多" if signal_pos == 1 else "空"
+                        act_prefix = "⚡ 反手進" if prev_pos != 0 else "⚡ 開盤進"
+                        status_parts.append(f"{act_prefix}{dir_str}倉({op:,.1f}→{cp:,.1f}|盤中{intraday_ret:+.2f}%)")
+                        sig = f"{sig_base} (反手留倉)" if prev_pos != 0 else f"{sig_base} (新進留倉)"
+                    else:
+                        status_parts.append(f"盤中續抱({op:,.1f}→{cp:,.1f}|{intraday_ret:+.2f}%)")
+                        sig = f"{sig_base} (一致續抱)"
+                    end_pos = signal_pos
             else:
                 if prev_pos != 0:
                     sig = "⚪ 訊號中斷 (開盤平倉)"
                 else:
                     sig = "⚪ 空手觀望"
                     status_parts.append("⚪ 空手無部位")
+                end_pos = 0
 
             net_ret = gross_ret - cost
             status = " ｜ ".join(status_parts)
 
-            # 只要當日持有部位或執行開盤平倉，皆計入有效參與交易日
-            if curr_pos != 0 or prev_pos != 0:
+            # 只要當日持有部位、盤中停損或執行開盤平倉，皆計入有效參與交易日
+            if signal_pos != 0 or prev_pos != 0:
                 active_signals += 1
                 if net_ret > 0:
                     correct_signals += 1
 
-            prev_pos = curr_pos
+            prev_pos = end_pos
             prev_cp = cp
 
         signal_types.append(sig)
-        positions.append(curr_pos)
+        positions.append(end_pos if not is_pending else signal_pos)
         gross_returns.append(gross_ret)
         friction_costs.append(cost)
         net_returns.append(net_ret)
@@ -1759,16 +1953,22 @@ def extract_day_trades(
     gross_returns: list,
     friction_costs: list,
     net_returns: list,
+    high_prices: Optional[list] = None,
+    low_prices: Optional[list] = None,
+    signal_types: Optional[list] = None,
+    stop_loss_pct: float = 0.0,
 ) -> pd.DataFrame:
     """
-    擷取波段留倉逐筆完整交易明細：
+    擷取波段留倉逐筆完整交易明細（純停損、不停利機制）：
     - 訊號觸發當日以開盤價 (TXF Open) 建倉；
-    - 若後續交易日買賣訊號一致則留倉續抱（累計持有天數）；
+    - 若後續交易日買賣訊號一致且未觸發停損則留倉續抱（累計持有天數，不設停利讓獲利奔跑）；
+    - 若當日部位虧損達 stop_loss_pct% 以上，即刻於停損觸發價位執行「停損平倉」；
     - 當預測訊號不連貫時，以該預測日之開盤價 (TXF Open) 正式平倉結算（若至樣本最後一日仍持倉，則以期末收盤價標記為留倉進行中）。
     """
     trades = []
     n = len(positions)
     active_trade = None
+    single_cost = next((c for c in friction_costs if 0 < c <= 0.045), 0.03)
 
     for i in range(n):
         pos = positions[i]
@@ -1778,59 +1978,102 @@ def extract_day_trades(
         if np.isnan(op) or np.isnan(cp):
             continue
 
-        if active_trade is None:
-            if pos != 0:
-                active_trade = {
-                    "dir": pos,
-                    "entry_date": d,
-                    "entry_price": op,
-                    "hold_days": 1,
-                }
+        hp = high_prices[i] if (high_prices is not None and i < len(high_prices) and not np.isnan(high_prices[i])) else max(op, cp)
+        lp = low_prices[i] if (low_prices is not None and i < len(low_prices) and not np.isnan(low_prices[i])) else min(op, cp)
+        sig_str = signal_types[i] if (signal_types is not None and i < len(signal_types)) else ""
+
+        if "多方訊號" in sig_str:
+            day_sig_dir = 1
+        elif "空方訊號" in sig_str:
+            day_sig_dir = -1
         else:
-            if pos == active_trade["dir"]:
-                # 買賣訊號一致：繼續留倉
-                active_trade["hold_days"] += 1
+            day_sig_dir = pos
+
+        is_intraday_stopped = ("停損平倉" in sig_str)
+
+        # (1) 若前一日有留倉部位，且當日訊號方向改變，先於當日開盤價平倉前筆交易
+        if active_trade is not None and day_sig_dir != active_trade["dir"]:
+            exit_price = op
+            entry_p = active_trade["entry_price"]
+            t_dir = active_trade["dir"]
+            point_pnl = (exit_price - entry_p) if t_dir == 1 else (entry_p - exit_price)
+            g_r = (point_pnl / entry_p) * 100.0
+            c_total = single_cost * 2.0
+            n_r = g_r - c_total
+
+            trades.append(
+                {
+                    "交易序號": f"#{len(trades) + 1}",
+                    "進場日": active_trade["entry_date"],
+                    "平倉日(開盤/停損)": f"{d} (開盤平倉)",
+                    "方向": "🟢 波段做多" if t_dir == 1 else "🔴 波段放空",
+                    "持有天數": f"{active_trade['hold_days']} 日",
+                    "進場價 (TXF Open)": f"{entry_p:,.1f}",
+                    "平倉價 (結算價位)": f"{exit_price:,.1f}",
+                    "點數損益": f"{point_pnl:+.1f} 點",
+                    "波段毛報酬": f"{g_r:+.2f}%",
+                    "摩擦成本": f"-{c_total:.3f}%",
+                    "實質淨損益": f"{n_r:+.2f}%",
+                    "交易結果": "🏆 獲利平倉" if n_r > 0 else "🌧️ 虧損平倉",
+                    "_net_val": n_r,
+                }
+            )
+            active_trade = None
+
+        # (2) 若目前無持倉且當日有進場訊號 (day_sig_dir != 0)，建立新部位
+        if active_trade is None and day_sig_dir != 0:
+            active_trade = {
+                "dir": day_sig_dir,
+                "entry_date": d,
+                "entry_price": op,
+                "hold_days": 1,
+            }
+        elif active_trade is not None and day_sig_dir == active_trade["dir"]:
+            active_trade["hold_days"] += 1
+
+        # (3) 檢查當日是否觸發盤中停損平倉
+        if active_trade is not None and (is_intraday_stopped or pos == 0) and stop_loss_pct > 0:
+            entry_p = active_trade["entry_price"]
+            t_dir = active_trade["dir"]
+
+            if t_dir == 1:
+                worst_cum = ((lp - entry_p) / entry_p) * 100.0
             else:
-                # 預測訊號不連貫：以當日 (預測日 d) 開盤價平倉
-                exit_price = op
-                entry_p = active_trade["entry_price"]
-                t_dir = active_trade["dir"]
-                point_pnl = (exit_price - entry_p) if t_dir == 1 else (entry_p - exit_price)
-                g_r = (point_pnl / entry_p) * 100.0
-                # 一進一出共 2 趟單邊摩擦成本
-                single_cost = next((c for c in friction_costs if c > 0), 0.03)
-                if single_cost > 0.045:
-                    single_cost = single_cost / 2.0
-                c_total = single_cost * 2.0
-                n_r = g_r - c_total
+                worst_cum = ((entry_p - hp) / entry_p) * 100.0
 
-                trades.append(
-                    {
-                        "交易序號": f"#{len(trades) + 1}",
-                        "進場日": active_trade["entry_date"],
-                        "平倉日(開盤平倉)": f"{d} (開盤)",
-                        "方向": "🟢 波段做多" if t_dir == 1 else "🔴 波段放空",
-                        "持有天數": f"{active_trade['hold_days']} 日",
-                        "進場價 (TXF Open)": f"{entry_p:,.1f}",
-                        "平倉價 (預測日 Open)": f"{exit_price:,.1f}",
-                        "點數損益": f"{point_pnl:+.1f} 點",
-                        "波段毛報酬": f"{g_r:+.2f}%",
-                        "摩擦成本": f"-{c_total:.3f}%",
-                        "實質淨損益": f"{n_r:+.2f}%",
-                        "交易結果": "🏆 獲利平倉" if n_r > 0 else "🌧️ 虧損平倉",
-                        "_net_val": n_r,
-                    }
-                )
-                active_trade = None
+            if worst_cum <= -stop_loss_pct + 1e-9:
+                if t_dir == 1:
+                    stop_p = max(entry_p * (1.0 - stop_loss_pct / 100.0), op * (1.0 - stop_loss_pct / 100.0))
+                    stop_p = min(stop_p, op)
+                else:
+                    stop_p = min(entry_p * (1.0 + stop_loss_pct / 100.0), op * (1.0 + stop_loss_pct / 100.0))
+                    stop_p = max(stop_p, op)
+            else:
+                stop_p = op * (1.0 - stop_loss_pct / 100.0) if t_dir == 1 else op * (1.0 + stop_loss_pct / 100.0)
 
-                # 若不連貫當日同時為反向訊號 (pos != 0)，則於當日開盤價同步反手建新倉
-                if pos != 0:
-                    active_trade = {
-                        "dir": pos,
-                        "entry_date": d,
-                        "entry_price": op,
-                        "hold_days": 1,
-                    }
+            point_pnl = (stop_p - entry_p) if t_dir == 1 else (entry_p - stop_p)
+            g_r = (point_pnl / entry_p) * 100.0
+            c_total = single_cost * 2.0
+            n_r = g_r - c_total
+
+            trades.append(
+                {
+                    "交易序號": f"#{len(trades) + 1}",
+                    "進場日": active_trade["entry_date"],
+                    "平倉日(開盤/停損)": f"{d} (盤中-{stop_loss_pct:.1f}%停損)",
+                    "方向": "🟢 波段做多" if t_dir == 1 else "🔴 波段放空",
+                    "持有天數": f"{active_trade['hold_days']} 日",
+                    "進場價 (TXF Open)": f"{entry_p:,.1f}",
+                    "平倉價 (結算價位)": f"{stop_p:,.1f} (停損觸發價)",
+                    "點數損益": f"{point_pnl:+.1f} 點",
+                    "波段毛報酬": f"{g_r:+.2f}%",
+                    "摩擦成本": f"-{c_total:.3f}%",
+                    "實質淨損益": f"{n_r:+.2f}%",
+                    "交易結果": f"🛡️ 觸及-{stop_loss_pct:.1f}%停損",
+                    "_net_val": n_r,
+                }
+            )
+            active_trade = None
 
     # 若至樣本最後一日仍有未平倉部位，以期末收盤價進行帳面評價
     if active_trade is not None and n > 0:
@@ -1840,10 +2083,6 @@ def extract_day_trades(
         t_dir = active_trade["dir"]
         point_pnl = (last_cp - entry_p) if t_dir == 1 else (entry_p - last_cp)
         g_r = (point_pnl / entry_p) * 100.0
-        single_cost = next((c for c in friction_costs if c > 0), 0.03)
-        if single_cost > 0.045:
-            single_cost = single_cost / 2.0
-        # 尚未平倉僅計入進場單邊成本
         c_open = single_cost
         n_r = g_r - c_open
 
@@ -1851,11 +2090,11 @@ def extract_day_trades(
             {
                 "交易序號": f"#{len(trades) + 1}",
                 "進場日": active_trade["entry_date"],
-                "平倉日(開盤平倉)": f"{last_d} (留倉中)",
+                "平倉日(開盤/停損)": f"{last_d} (留倉中)",
                 "方向": "🟢 波段做多" if t_dir == 1 else "🔴 波段放空",
                 "持有天數": f"{active_trade['hold_days']} 日 (續抱)",
                 "進場價 (TXF Open)": f"{entry_p:,.1f}",
-                "平倉價 (預測日 Open)": f"{last_cp:,.1f} (期末收盤評價)",
+                "平倉價 (結算價位)": f"{last_cp:,.1f} (期末收盤評價)",
                 "點數損益": f"{point_pnl:+.1f} 點",
                 "波段毛報酬": f"{g_r:+.2f}%",
                 "摩擦成本": f"-{c_open:.3f}%",
@@ -1876,93 +2115,119 @@ def optimize_thresholds_fixed_days(
     bear_range: Tuple[int, int] = (20, 50),
     step: int = 2,
     cost_rate_pct: float = 0.03,
-) -> Tuple[int, int, float, float, float, pd.DataFrame, pd.DataFrame]:
+    enable_stop_loss: bool = False,
+) -> Tuple[int, int, float, float, float, float, pd.DataFrame, pd.DataFrame]:
     """
     聚焦於所有 3x3 儲存格範圍內，計算其 (準確度 × 波段留倉淨利) 合計為最大之中心點，
     作為最佳的空方與多方發動信心門檻（高原穩健尋優）。
+    若 enable_stop_loss=True，優化過程會自動於候選停損百分比 [0.5%, 1.0%, 1.5%, 2.0%, 2.5%, 3.0%, 3.5%, 4.0%, 4.5%, 5.0%] 中，
+    聯合搜尋使 3x3 九宮格總分最大之「最佳停損百分比 (best_stop_loss_pct)」！
     """
     bull_steps = list(range(bull_range[0], bull_range[1] + 1, step))
     bear_steps = list(range(bear_range[0], bear_range[1] + 1, step))
+    candidate_stops = [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0] if enable_stop_loss else [0.0]
 
     acc_dec = acc_pct / 100.0
     best_bull = 60
     best_bear = 40
+    best_stop_loss_pct = 2.0 if enable_stop_loss else 0.0
     best_net_ret = 0.0
     best_3x3_sum_score = -999999.0
+    best_score_matrix = pd.DataFrame()
+    best_text_matrix = pd.DataFrame()
 
-    raw_score_matrix = pd.DataFrame(
-        index=bull_steps, columns=bear_steps, dtype=float
-    )
-    net_ret_matrix = pd.DataFrame(
-        index=bull_steps, columns=bear_steps, dtype=float
-    )
-    text_matrix = pd.DataFrame(index=bull_steps, columns=bear_steps, dtype=str)
+    for sl_pct in candidate_stops:
+        raw_score_matrix = pd.DataFrame(
+            index=bull_steps, columns=bear_steps, dtype=float
+        )
+        net_ret_matrix = pd.DataFrame(
+            index=bull_steps, columns=bear_steps, dtype=float
+        )
+        text_matrix = pd.DataFrame(index=bull_steps, columns=bear_steps, dtype=str)
 
-    # 第一階段：計算每個儲存格的單點 (準確度 × 當沖淨利) 評分與績效明細
-    for bull in bull_steps:
-        for bear in bear_steps:
-            *_, net_rets, _, active, correct = simulate_day_trading_pnl(
-                probs_pct, eval_df, bull, bear, cost_rate_pct
-            )
-            total_net = sum(net_rets)
-            score = (
-                (acc_dec * total_net)
-                if total_net >= 0
-                else (total_net / max(acc_dec, 0.1))
-            )
-
-            win_rate = (correct / active * 100.0) if active > 0 else 0.0
-            raw_score_matrix.loc[bull, bear] = score
-            net_ret_matrix.loc[bull, bear] = total_net
-            text_matrix.loc[bull, bear] = (
-                f"單點:{score:+.1f}<br>淨:{total_net:+.1f}%<br>({win_rate:.0f}%|{active}次)"
-            )
-
-    # 第二階段：搜尋所有完整 3x3 儲存格範圍內 (準確度 × 當沖淨利) 總和最大的中心點
-    n_rows = len(bull_steps)
-    n_cols = len(bear_steps)
-    score_matrix = raw_score_matrix.round(2).copy()
-
-    if n_rows >= 3 and n_cols >= 3:
-        for i in range(1, n_rows - 1):
-            for j in range(1, n_cols - 1):
-                bull_c = bull_steps[i]
-                bear_c = bear_steps[j]
-                block_3x3 = raw_score_matrix.iloc[i - 1 : i + 2, j - 1 : j + 2]
-                block_sum = float(block_3x3.values.sum())
-
-                orig_txt = text_matrix.loc[bull_c, bear_c]
-                text_matrix.loc[bull_c, bear_c] = (
-                    f"3x3合:{block_sum:+.1f}<br>{orig_txt}"
-                )
-
-                if (block_sum > best_3x3_sum_score) or (
-                    abs(block_sum - best_3x3_sum_score) < 1e-9
-                    and raw_score_matrix.loc[bull_c, bear_c]
-                    > raw_score_matrix.loc[best_bull, best_bear]
-                ):
-                    best_3x3_sum_score = block_sum
-                    best_bull = bull_c
-                    best_bear = bear_c
-                    best_net_ret = float(net_ret_matrix.loc[bull_c, bear_c])
-    else:
+        # 第一階段：計算該停損百分比下每個儲存格的單點 (準確度 × 波段淨利) 評分與績效明細
         for bull in bull_steps:
             for bear in bear_steps:
-                sc = float(raw_score_matrix.loc[bull, bear])
-                if sc > best_3x3_sum_score:
-                    best_3x3_sum_score = sc
-                    best_bull = bull
-                    best_bear = bear
-                    best_net_ret = float(net_ret_matrix.loc[bull, bear])
+                *_, net_rets, _, active, correct = simulate_day_trading_pnl(
+                    probs_pct, eval_df, bull, bear, cost_rate_pct, stop_loss_pct=sl_pct
+                )
+                total_net = sum(net_rets)
+                score = (
+                    (acc_dec * total_net)
+                    if total_net >= 0
+                    else (total_net / max(acc_dec, 0.1))
+                )
+
+                win_rate = (correct / active * 100.0) if active > 0 else 0.0
+                raw_score_matrix.loc[bull, bear] = score
+                net_ret_matrix.loc[bull, bear] = total_net
+                text_matrix.loc[bull, bear] = (
+                    f"單點:{score:+.1f}<br>淨:{total_net:+.1f}%<br>({win_rate:.0f}%|{active}次)"
+                )
+
+        # 第二階段：搜尋所有完整 3x3 儲存格範圍內 (準確度 × 波段淨利) 總和最大的中心點
+        n_rows = len(bull_steps)
+        n_cols = len(bear_steps)
+        score_matrix = raw_score_matrix.round(2).copy()
+
+        sl_best_bull = 60
+        sl_best_bear = 40
+        sl_best_net_ret = 0.0
+        sl_best_3x3_sum = -999999.0
+
+        if n_rows >= 3 and n_cols >= 3:
+            for i in range(1, n_rows - 1):
+                for j in range(1, n_cols - 1):
+                    bull_c = bull_steps[i]
+                    bear_c = bear_steps[j]
+                    block_3x3 = raw_score_matrix.iloc[i - 1 : i + 2, j - 1 : j + 2]
+                    block_sum = float(block_3x3.values.sum())
+
+                    orig_txt = text_matrix.loc[bull_c, bear_c]
+                    text_matrix.loc[bull_c, bear_c] = (
+                        f"3x3合:{block_sum:+.1f}<br>{orig_txt}"
+                    )
+
+                    if (block_sum > sl_best_3x3_sum) or (
+                        abs(block_sum - sl_best_3x3_sum) < 1e-9
+                        and raw_score_matrix.loc[bull_c, bear_c]
+                        > raw_score_matrix.loc[sl_best_bull, sl_best_bear]
+                    ):
+                        sl_best_3x3_sum = block_sum
+                        sl_best_bull = bull_c
+                        sl_best_bear = bear_c
+                        sl_best_net_ret = float(net_ret_matrix.loc[bull_c, bear_c])
+        else:
+            for bull in bull_steps:
+                for bear in bear_steps:
+                    sc = float(raw_score_matrix.loc[bull, bear])
+                    if sc > sl_best_3x3_sum:
+                        sl_best_3x3_sum = sc
+                        sl_best_bull = bull
+                        sl_best_bear = bear
+                        sl_best_net_ret = float(net_ret_matrix.loc[bull, bear])
+
+        if (sl_best_3x3_sum > best_3x3_sum_score) or (
+            abs(sl_best_3x3_sum - best_3x3_sum_score) < 1e-9
+            and sl_best_net_ret > best_net_ret
+        ):
+            best_3x3_sum_score = sl_best_3x3_sum
+            best_bull = sl_best_bull
+            best_bear = sl_best_bear
+            best_stop_loss_pct = sl_pct
+            best_net_ret = sl_best_net_ret
+            best_score_matrix = score_matrix.copy()
+            best_text_matrix = text_matrix.copy()
 
     return (
         best_bull,
         best_bear,
+        best_stop_loss_pct,
         acc_pct,
         best_net_ret,
         best_3x3_sum_score,
-        score_matrix,
-        text_matrix,
+        best_score_matrix,
+        best_text_matrix,
     )
 
 
@@ -1972,6 +2237,7 @@ def render_joint_threshold_heatmap(
     best_bull: int,
     best_bear: int,
     sample_days: int = 500,
+    best_stop_loss_pct: float = 0.0,
 ):
     annot_text = text_matrix.copy()
     if best_bull in annot_text.index and best_bear in annot_text.columns:
@@ -2020,8 +2286,9 @@ def render_joint_threshold_heatmap(
             fillcolor="rgba(251, 191, 36, 0.08)",
         )
 
+    sl_title_tag = f" | 最佳停損: -{best_stop_loss_pct:.1f}% (不停利)" if best_stop_loss_pct > 0 else " | 無停損 (不停利)"
     fig.update_layout(
-        title=f"<b>前 {sample_days} 交易日訓練樣本門檻優化熱力圖 (目標: 3×3 九宮格內 Σ(準確度 × 波段留倉淨利) 最大之中心點)</b>",
+        title=f"<b>前 {sample_days} 交易日訓練樣本門檻優化熱力圖 (目標: 3×3 九宮格內 Σ(準確度 × 波段留倉淨利) 最大之中心點{sl_title_tag})</b>",
         xaxis=dict(
             title="<b>空方波段防禦發動信心門檻 (P(Up) ≤ 門檻)</b>",
             gridcolor="#334155",
@@ -2273,6 +2540,7 @@ def export_520_days_to_excel_with_summary(
     best_bull: int,
     best_bear: int,
     cost_rate_pct: float = 0.03,
+    best_stop_loss_pct: float = 0.0,
 ) -> Tuple[bytes, str, str]:
     export_df = hist_df.copy()
     export_df.index = pd.to_datetime(export_df.index).normalize()
@@ -2335,6 +2603,11 @@ def export_520_days_to_excel_with_summary(
         export_df["投信期指未平倉淨額(口)"] = np.nan
         export_df["自營商期指未平倉淨額(口)"] = np.nan
 
+    # 【雙重防呆確保零空白】：在匯出 Excel 前，強制對美股與匯率相關欄位以「前一交易日數據 (.ffill())」補齊任何潛在空值
+    for us_c in ["usdtwd_ret", "sox_ret", "tsm_ret", "vix_close", "us_date"]:
+        if us_c in export_df.columns:
+            export_df[us_c] = export_df[us_c].ffill().bfill()
+
     # 計算費半×台積電ADR交互共振項與國安基金虛擬變數供 Excel 檢視
     mu_sox = engine.active_scaler.get("sox_ret", {}).get("mu", 0.0)
     sig_sox = engine.active_scaler.get("sox_ret", {}).get("sigma", 1.0)
@@ -2342,7 +2615,7 @@ def export_520_days_to_excel_with_summary(
     sig_tsm = engine.active_scaler.get("tsm_ret", {}).get("sigma", 1.0)
     z_sox_col = (export_df["sox_ret"] - mu_sox) / (sig_sox if sig_sox > 0 else 1.0)
     z_tsm_col = (export_df["tsm_ret"] - mu_tsm) / (sig_tsm if sig_tsm > 0 else 1.0)
-    export_df["費半×台積電ADR交互項"] = z_sox_col * z_tsm_col
+    export_df["費半×台積電ADR交互項"] = (z_sox_col * z_tsm_col).ffill().bfill()
 
     # 強制依據每個交易日期透過 check_is_nsf_active 重算護盤期間虛擬變數
     export_df["nsf_active"] = [
@@ -2416,7 +2689,9 @@ def export_520_days_to_excel_with_summary(
         eval_df = engine.in_sample_df
         (
             sigs, positions, gross_rets, costs, net_rets, _, active, correct
-        ) = simulate_day_trading_pnl(probs_pct, eval_df, best_bull, best_bear, cost_rate_pct)
+        ) = simulate_day_trading_pnl(
+            probs_pct, eval_df, best_bull, best_bear, cost_rate_pct, stop_loss_pct=best_stop_loss_pct
+        )
 
         total_days = len(eval_df)
         win_rate = (correct / active * 100.0) if active > 0 else 0.0
@@ -2475,6 +2750,7 @@ def export_520_days_to_excel_with_summary(
         {"統計項目 (Metrics)": "模型訓練樣本內準確率 (Accuracy)", "數值 / 指標 (Values)": f"{engine.fit_accuracy:.1f}%" if engine.fit_accuracy is not None else "-"},
         {"統計項目 (Metrics)": "多方波段發動門檻 (3x3 最佳中心)", "數值 / 指標 (Values)": f"{best_bull}%"},
         {"統計項目 (Metrics)": "空方波段防禦門檻 (3x3 最佳中心)", "數值 / 指標 (Values)": f"{best_bear}%"},
+        {"統計項目 (Metrics)": "最佳化停損百分比 (Stop-Loss %, 不停利)", "數值 / 指標 (Values)": f"-{best_stop_loss_pct:.1f}% (純停損、不停利)" if best_stop_loss_pct > 0 else "不設停損 (不停利)"},
         {"統計項目 (Metrics)": "訓練期持倉/平倉參與日數 (Active Days)", "數值 / 指標 (Values)": f"{active} 日"},
         {"統計項目 (Metrics)": "訓練期獲利日數 / 虧損日數", "數值 / 指標 (Values)": f"{correct} 日 / {active - correct} 日"},
         {"統計項目 (Metrics)": "訓練期波段日勝率 (Win Rate)", "數值 / 指標 (Values)": f"{win_rate:.2f}%"},
@@ -2486,7 +2762,7 @@ def export_520_days_to_excel_with_summary(
         {"統計項目 (Metrics)": "訓練期年化夏普比率 (Sharpe Ratio, Rf=1.5%)", "數值 / 指標 (Values)": f"{sharpe:.2f}"},
         {"統計項目 (Metrics)": "訓練期卡瑪比率 (Calmar Ratio, 年化/|MDD|)", "數值 / 指標 (Values)": f"{calmar:.2f}"},
         {"統計項目 (Metrics)": "訓練期獲利因子 (Profit Factor, 總盈/總虧)", "數值 / 指標 (Values)": f"{profit_factor:.2f}" if profit_factor < 90 else "∞ (無虧損)"},
-        {"統計項目 (Metrics)": "交易留倉與平倉規則 (Position Rule)", "數值 / 指標 (Values)": "買賣訊號一致則留倉續抱；預測訊號不連貫時，以預測日開盤價平倉"},
+        {"統計項目 (Metrics)": "交易留倉與平倉規則 (Position Rule)", "數值 / 指標 (Values)": f"買賣訊號一致則留倉續抱（不停利）；訊號不連貫以預測日開盤價平倉；盤中虧損達 -{best_stop_loss_pct:.1f}% 即刻停損平倉" if best_stop_loss_pct > 0 else "買賣訊號一致則留倉續抱（不停利、不設停損）；訊號不連貫以預測日開盤價平倉"},
     ]
     summary_df = pd.DataFrame(summary_records)
     curve_df = pd.DataFrame(curve_records) if curve_records else pd.DataFrame(columns=["交易日期", "單日實質淨損益(%)", "累計淨值報酬(%)"])
@@ -2689,6 +2965,14 @@ chip_transform_mode = st.sidebar.selectbox(
     help="預設採用雙對稱對數壓縮厚尾極值，亦可切換為原始線性水準項",
 )
 
+stop_loss_option = st.sidebar.radio(
+    "🛡️ 是否需停損設定 (純停損、不停利)",
+    ["不需停損", "需停損 (優化自動設定最佳停損%)"],
+    index=0,
+    help="預設為「不需停損」（不設停損且不停利，全數依訊號不連貫於預測日開盤平倉）；若切換為「需停損」，優化過程將自動於候選停損比例 (0.5% ~ 5.0%) 中搜尋使 3×3 九宮格目標分數最大之最佳停損百分比。",
+)
+enable_stop_loss_flag = stop_loss_option.startswith("需停損")
+
 engine = TaiexLogisticEngine(transform_mode=chip_transform_mode)
 
 DATA_WINDOW_DAYS = 520
@@ -2716,7 +3000,7 @@ with btn_col2:
     reset_btn = st.button("↺ 還原特徵", use_container_width=True)
 
 st.sidebar.caption(
-    f"📌 **波段留倉交易規則**：以 **{selected_target_date}** 近月臺指期開盤價進場，**若買賣訊號一致則留倉續抱，預測訊號不連貫時，則以預測日開盤價平倉**。"
+    f"📌 **波段留倉與純停損規則（不停利）**：以 **{selected_target_date}** 近月臺指期開盤價進場，**買賣訊號一致則留倉續抱（不設停利），訊號不連貫以預測日開盤價平倉；若設定「需停損」，優化器將自動尋優最佳停損百分比，於盤中觸及停損門檻時即刻停損平倉**。"
 )
 
 
@@ -2756,17 +3040,18 @@ if need_fetch:
     with st.spinner(
         "正在極速擷取 520 交易日真實歷史數據（前500天訓練，後20天OOS樣本外檢驗）..."
     ):
+        # 【消除目標日預測之內生性】：預測目標交易日 (T) 之投資決策，嚴格採用前一交易日 (base_prev_date, T-1) 之台美市場數據
         twse_df, twse_actual_date, twse_msg = (
             pipeline.fetch_twse_institutional_with_fallback(
-                selected_target_date
+                base_prev_date
             )
         )
         taifex_df, taifex_actual_date, taifex_msg = (
-            pipeline.fetch_taifex_oi_with_fallback(selected_target_date)
+            pipeline.fetch_taifex_oi_with_fallback(base_prev_date)
         )
 
         us_df, us_actual_date, us_msg = pipeline.fetch_us_market(
-            selected_target_date, days_back=40
+            base_prev_date, days_back=40
         )
 
         hist_df = pipeline.fetch_historical_training_and_verification_data(
@@ -2828,19 +3113,21 @@ if need_fetch:
         tsm_r = float(latest_us["tsm_ret"]) if latest_us is not None else 0.0
         vix_c = float(latest_us["vix_close"]) if latest_us is not None else 18.0
 
+        # 嚴格取前一交易日 (T-1) 之跳空與國安基金狀態作為預測目標日 (T) 的已知特徵，避免使用當日未來數據
         gap_r = 0.0
-        if not hist_df.empty and pd.to_datetime(selected_target_date) in hist_df.index:
-            gap_r = float(hist_df.loc[pd.to_datetime(selected_target_date), "gap_ret"])
-        elif not hist_df.empty:
-            # 若目標日尚未開盤，預設以台積電ADR與費半平均漲跌幅之 0.35 倍預估開盤跳空幅度
-            gap_r = round((sox_r * 0.4 + tsm_r * 0.6) * 0.35, 2)
+        if not hist_df.empty:
+            prior_hist = hist_df[hist_df.index < pd.to_datetime(selected_target_date)]
+            if not prior_hist.empty and "gap_ret" in prior_hist.columns:
+                gap_r = float(prior_hist.iloc[-1]["gap_ret"])
+            else:
+                gap_r = round((sox_r * 0.4 + tsm_r * 0.6) * 0.35, 2)
 
-        nsf_act = check_is_nsf_active(selected_target_date)
+        nsf_act = check_is_nsf_active(base_prev_date)
         us_macro_event = US_MACRO_EVENTS_MAP.get(us_actual_date, "")
 
         st.session_state["cached_data"] = {
             "target_date": selected_target_date,
-            "base_feature_date": selected_target_date,
+            "base_feature_date": base_prev_date,
             "twse_actual_date": twse_actual_date,
             "taifex_actual_date": taifex_actual_date,
             "us_actual_date": us_actual_date,
@@ -2889,7 +3176,7 @@ if "hist_df" in data and not data["hist_df"].empty:
     data["hist_df"]["nsf_active"] = [
         float(check_is_nsf_active(d)) for d in data["hist_df"].index
     ]
-data["nsf_act"] = check_is_nsf_active(data["target_date"])
+data["nsf_act"] = check_is_nsf_active(data.get("base_feature_date", base_prev_date))
 
 # -----------------------------------------------------------------------------
 # 核心架構：前 500 天訓練尋優，後 20 天做純樣本外 (OOS) 盲測
@@ -2919,6 +3206,7 @@ if (
         (
             joint_best_bull,
             joint_best_bear,
+            joint_best_stop_loss_pct,
             joint_best_acc,
             joint_best_net_ret,
             joint_best_score,
@@ -2932,10 +3220,12 @@ if (
             bear_range=(20, 50),
             step=2,
             cost_rate_pct=cost_rate_setting,
+            enable_stop_loss=enable_stop_loss_flag,
         )
     else:
         joint_best_bull = 60
         joint_best_bear = 40
+        joint_best_stop_loss_pct = 2.0 if enable_stop_loss_flag else 0.0
         joint_best_acc = 50.0
         joint_best_net_ret = 0.0
         joint_best_score = 0.0
@@ -2945,6 +3235,7 @@ else:
     engine.reset_to_static()
     joint_best_bull = 60
     joint_best_bear = 40
+    joint_best_stop_loss_pct = 2.0 if enable_stop_loss_flag else 0.0
     joint_best_acc = 50.0
     joint_best_net_ret = 0.0
     joint_best_score = 0.0
@@ -3120,12 +3411,18 @@ nsf_banner_str = (
     else "⚪ **非護盤期間 (Dummy = 0)**"
 )
 
+sl_banner_desc = (
+    f"啟用停損（優化自動設定最佳停損：-{joint_best_stop_loss_pct:.1f}%，交易策略：不停利）"
+    if enable_stop_loss_flag
+    else "不需停損（交易策略：不停利、不設停損）"
+)
+
 st.markdown(
     f"""
 > **系統運行狀態與跨市場因果檢驗 (10 變量 Logistic 模型)**  
 > • **目標預測交易日 (T)**：`{data['target_date']}` | **模型權重模式**：`{m_desc}`  
-> • **交易執行標的**：**臺指近月期貨 (TXF Front-Month)** | **執行策略**：**開盤價進場，若買賣訊號一致則留倉，預測訊號不連貫時，則以預測日開盤價平倉**  
-> • **架構切分**：**數據採樣 520 交易日 $\\rightarrow$ 前 500 日訓練尋優 (3×3最佳中心多方門檻: {joint_best_bull}% | 空方門檻: {joint_best_bear}%)；後 20 日為純樣本外 (OOS) 盲測**  
+> • **交易執行標的**：**臺指近月期貨 (TXF Front-Month)** | **執行策略**：**開盤價進場，訊號一致留倉、不連貫以預測日開盤平倉；{sl_banner_desc}**  
+> • **架構切分**：**數據採樣 520 交易日 $\\rightarrow$ 前 500 日訓練尋優 (3×3最佳中心多方門檻: {joint_best_bull}% | 空方門檻: {joint_best_bear}% | 最佳停損: {f'-{joint_best_stop_loss_pct:.1f}%' if enable_stop_loss_flag else '無'})；後 20 日為純樣本外 (OOS) 盲測**  
 > • **國安基金護盤狀態**：{nsf_banner_str} （第9次護盤期間：`2025/04/09 ~ 2026/01/12`；第10次護盤期間：`2026/11/09 起持續進行中` 皆設為 1，其餘為 0）  
 > • **證券交易所 (TWSE)**：外資現貨買賣超 (擷取日期: `{data['twse_actual_date']}` | `狀態: {data['twse_msg']}`)  
 > • **期貨交易所 (TAIFEX)**：臺股期貨外資留倉淨額 (擷取日期: `{data['taifex_actual_date']}` | `狀態: {data['taifex_msg']}`)  
@@ -3149,6 +3446,7 @@ if not data["hist_df"].empty:
             best_bull=joint_best_bull,
             best_bear=joint_best_bear,
             cost_rate_pct=cost_rate_setting,
+            best_stop_loss_pct=joint_best_stop_loss_pct,
         )
         st.download_button(
             label=f"📥 下載 520 交易日台美數據 (含10因子明細、績效摘要與淨值走勢圖) ({file_ext.upper()})",
@@ -3418,38 +3716,53 @@ hist_taifex = data.get("hist_taifex_df", pd.DataFrame())
 if not oos_eval_df.empty and len(oos_eval_df) >= 5:
     ten_days_df = oos_eval_df.tail(OOS_TEST_DAYS).copy()
     calc_probs = []
+    decision_us_dates = []
+    decision_us_events = []
 
     for i in range(len(ten_days_df)):
         current_date_idx = ten_days_df.index[i]
-        curr_tw_row = ten_days_df.loc[current_date_idx]
+
+        # 【關鍵修正 2：消除樣本外測試之內生性問題】
+        # 交易日當日 (current_date_idx, T) 的開盤投資決策，必須 100% 依據「前一交易日 (T-1)」之台美市場數據！
+        prior_rows = hist_df_full[hist_df_full.index < current_date_idx]
+        if not prior_rows.empty:
+            prev_tw_row = prior_rows.iloc[-1]
+            prev_date_idx = prior_rows.index[-1]
+        else:
+            prev_tw_row = ten_days_df.loc[current_date_idx]
+            prev_date_idx = current_date_idx
 
         f_val = 5.0
         if not hist_twse.empty and "foreign_net" in hist_twse.columns:
-            matched_twse = hist_twse[hist_twse.index <= current_date_idx]
+            # 嚴格使用 < current_date_idx，確保只取前一交易日 (T-1) 收盤後公布之外資現貨買賣超
+            matched_twse = hist_twse[hist_twse.index < current_date_idx].dropna(subset=["foreign_net"])
             if not matched_twse.empty:
                 f_val = float(matched_twse.iloc[-1]["foreign_net"])
 
         tx_oi_val = -12000.0
         if not hist_taifex.empty and "tx_foreign_oi" in hist_taifex.columns:
-            matched_taifex = hist_taifex[hist_taifex.index <= current_date_idx]
+            # 嚴格使用 < current_date_idx，確保只取前一交易日 (T-1) 收盤後公布之外資期指未平倉淨額
+            matched_taifex = hist_taifex[hist_taifex.index < current_date_idx].dropna(subset=["tx_foreign_oi"])
             if not matched_taifex.empty:
                 tx_oi_val = float(matched_taifex.iloc[-1]["tx_foreign_oi"])
 
-        nsf_val = float(check_is_nsf_active(current_date_idx))
+        nsf_val = float(check_is_nsf_active(prev_date_idx))
 
         hist_feat = {
             "foreign_net": f_val,
             "tx_foreign_oi": tx_oi_val,
-            "usdtwd_ret": float(curr_tw_row.get("usdtwd_ret", 0.0)),
-            "sox_ret": float(curr_tw_row["sox_ret"]),
-            "tsm_ret": float(curr_tw_row["tsm_ret"]),
-            "vix_close": float(curr_tw_row["vix_close"]),
-            "gap_ret": float(curr_tw_row.get("gap_ret", 0.0)),
+            "usdtwd_ret": float(prev_tw_row.get("usdtwd_ret", 0.0)),
+            "sox_ret": float(prev_tw_row["sox_ret"]),
+            "tsm_ret": float(prev_tw_row["tsm_ret"]),
+            "vix_close": float(prev_tw_row["vix_close"]),
+            "gap_ret": float(prev_tw_row.get("gap_ret", 0.0)),
             "nsf_active": nsf_val,
         }
 
         p, _ = engine.predict(hist_feat)
         calc_probs.append(round(p, 4))
+        decision_us_dates.append(prev_tw_row.get("us_date", prev_date_idx.date()))
+        decision_us_events.append(prev_tw_row.get("us_event", ""))
 
     ten_days_df["Prob_Up"] = calc_probs
     date_labels = ten_days_df.index.strftime("%Y-%m-%d").tolist()
@@ -3459,16 +3772,8 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
     txf_close_prices = ten_days_df["TXF_Close"].tolist()
     gaps_list = ten_days_df["gap_ret"].tolist()
     filled_list = ten_days_df["gap_filled"].tolist()
-    us_dates_list = (
-        ten_days_df["us_date"].tolist()
-        if "us_date" in ten_days_df
-        else []
-    )
-    us_events_list = (
-        ten_days_df["us_event"].tolist()
-        if "us_event" in ten_days_df
-        else []
-    )
+    us_dates_list = decision_us_dates
+    us_events_list = decision_us_events
 
     valid_gaps = [g for g in gaps_list if not np.isnan(g)]
     valid_fills = [f for f in filled_list if not np.isnan(f)]
@@ -3541,18 +3846,18 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
 
     st.markdown("---")
 
-    ctrl_col0, ctrl_col1, ctrl_col2, ctrl_col3 = st.columns([3, 3, 3, 2.5])
+    ctrl_col0, ctrl_col1, ctrl_col2, ctrl_col_sl, ctrl_col3 = st.columns([2.6, 2.5, 2.5, 2.5, 2.2])
     with ctrl_col0:
         auto_tune_thresholds = st.checkbox(
-            "⚡ 自動套用前 500 日 3×3 最佳波段門檻",
+            "⚡ 自動套用前 500 日最佳門檻與停損%",
             value=True,
-            help=f"套用前 {TRAIN_SAMPLE_DAYS} 交易日訓練樣本下，所有 3×3 九宮格範圍內 Σ(準確度×波段留倉淨利) 最大之最佳中心門檻",
+            help=f"套用前 {TRAIN_SAMPLE_DAYS} 交易日訓練樣本下，所有 3×3 九宮格範圍內 Σ(準確度×波段留倉淨利) 最大之最佳中心門檻與最佳停損百分比",
         )
     with ctrl_col1:
         if auto_tune_thresholds:
             threshold_bull = joint_best_bull
             st.metric(
-                "🎯 多方波段發動門檻 (3×3中心)",
+                "🎯 多方波段門檻 (3×3中心)",
                 f"{threshold_bull}%",
                 delta=f"3×3九宮格總分: {joint_best_score:+.2f}",
             )
@@ -3564,13 +3869,38 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
         if auto_tune_thresholds:
             threshold_bear = joint_best_bear
             st.metric(
-                "🛡️ 空方波段防禦門檻 (3×3中心)",
+                "🛡️ 空方波段門檻 (3×3中心)",
                 f"{threshold_bear}%",
-                delta=f"中心點前{TRAIN_SAMPLE_DAYS}日淨利: {joint_best_net_ret:+.1f}%",
+                delta=f"前{TRAIN_SAMPLE_DAYS}日淨利: {joint_best_net_ret:+.1f}%",
             )
         else:
             threshold_bear = st.slider(
                 "🛡️ 空方波段防禦門檻 (%)", 20, 50, joint_best_bear, step=2
+            )
+    with ctrl_col_sl:
+        if not enable_stop_loss_flag:
+            active_stop_loss_pct = 0.0
+            st.metric(
+                "🛑 停損設定 (不停利)",
+                "不需停損",
+                delta="左側已設為不需停損",
+                delta_color="off",
+            )
+        elif auto_tune_thresholds:
+            active_stop_loss_pct = joint_best_stop_loss_pct
+            st.metric(
+                "🛑 優化最佳停損% (不停利)",
+                f"-{active_stop_loss_pct:.1f}%",
+                delta="自動尋優最佳停損百分比",
+                delta_color="normal",
+            )
+        else:
+            active_stop_loss_pct = st.slider(
+                "🛑 手動停損百分比 (%)",
+                min_value=0.5,
+                max_value=5.0,
+                value=float(joint_best_stop_loss_pct if joint_best_stop_loss_pct > 0 else 2.0),
+                step=0.5,
             )
     with ctrl_col3:
         cost_rate_pct = st.number_input(
@@ -3580,7 +3910,7 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
             value=0.03,
             step=0.005,
             format="%.3f",
-            help="包含期交稅、手續費與進出滑價（建倉與開盤平倉各扣單趟成本，留倉續抱期間不重複扣費）",
+            help="包含期交稅、手續費與進出滑價（建倉與平倉各扣單趟成本，留倉續抱期間不重複扣費）",
         )
 
     with st.expander(
@@ -3595,12 +3925,18 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
                     joint_best_bull,
                     joint_best_bear,
                     sample_days=TRAIN_SAMPLE_DAYS,
+                    best_stop_loss_pct=active_stop_loss_pct,
                 ),
                 use_container_width=True,
             )
 
+    sl_rule_text = (
+        f"當盤中部位虧損達 **-{active_stop_loss_pct:.1f}%** 以上時即刻啟動停損平倉（**策略固定不停利**）"
+        if active_stop_loss_pct > 0
+        else "**不設停損且不停利**，全數依訊號不連貫於預測日開盤平倉"
+    )
     st.caption(
-        f"💡 **純樣本外波段留倉會計基準**：以 **前 500 天訓練得出之 3×3 九宮格最佳中心門檻 ({threshold_bull}% / {threshold_bear}%)** 於最近 20 個營業日執行：**開盤價進場，若買賣訊號一致則留倉續抱（免重複扣費），當預測訊號不連貫時，則以該預測日之開盤價平倉結算**（單趟進場或開盤平倉各扣除 **{cost_rate_pct:.3f}%** 摩擦成本）。"
+        f"💡 **純樣本外波段留倉會計基準**：以 **前 500 天訓練得出之 3×3 九宮格最佳中心門檻 ({threshold_bull}% / {threshold_bear}%)** 於最近 20 個營業日執行：**開盤價進場，買賣訊號一致則留倉續抱（免重複扣費），訊號不連貫時以預測日開盤價平倉；{sl_rule_text}**（單趟進場或平倉各扣除 **{cost_rate_pct:.3f}%** 摩擦成本）。"
     )
 
     (
@@ -3618,6 +3954,18 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
         threshold_bull,
         threshold_bear,
         cost_rate_pct,
+        stop_loss_pct=active_stop_loss_pct,
+    )
+
+    txf_high_prices = (
+        ten_days_df["TXF_High"].tolist()
+        if "TXF_High" in ten_days_df.columns
+        else [max(o, c) for o, c in zip(txf_open_prices, txf_close_prices)]
+    )
+    txf_low_prices = (
+        ten_days_df["TXF_Low"].tolist()
+        if "TXF_Low" in ten_days_df.columns
+        else [min(o, c) for o, c in zip(txf_open_prices, txf_close_prices)]
     )
 
     trades_df = extract_day_trades(
@@ -3628,6 +3976,10 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
         gross_returns,
         friction_costs,
         net_returns,
+        high_prices=txf_high_prices,
+        low_prices=txf_low_prices,
+        signal_types=signal_types,
+        stop_loss_pct=active_stop_loss_pct,
     )
 
     bar_colors = ["#f43f5e" if r >= 0 else "#10b981" for r in gross_returns]
@@ -3707,9 +4059,9 @@ if not oos_eval_df.empty and len(oos_eval_df) >= 5:
         )
     with k3:
         st.metric(
-            "倉位管理機制",
-            "一致留倉 / 異動開盤平",
-            delta="訊號不連貫以預測日開盤平倉",
+            "倉位與純停損機制 (不停利)",
+            f"一致留倉 / -{active_stop_loss_pct:.1f}%停損" if active_stop_loss_pct > 0 else "一致留倉 / 不設停損",
+            delta=f"虧損達-{active_stop_loss_pct:.1f}%即停損(不停利)" if active_stop_loss_pct > 0 else "訊號不連貫開盤平倉(不停利)",
             delta_color="off",
         )
     with k4:
