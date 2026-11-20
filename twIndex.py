@@ -23,7 +23,7 @@ import yfinance as yf
 # 頁面基本配置（採用寬螢幕與暗色系量化終端風格）
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="TAIEX 次日漲跌機率監控儀表板 (14因子-含輝達NVDA、夜盤漲跌、價差率與幾何共振升級版)",
+    page_title="次日近期台指期漲跌機率監控儀表板",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded",
