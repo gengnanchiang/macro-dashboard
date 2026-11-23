@@ -3117,7 +3117,7 @@ def optimize_thresholds_fixed_days(
                 # swing_win_dec = (win_swings / n_swings) if n_swings > 0 else 0.0
 
                 # 優化目標：極大化 
-                if n_swings < 10:
+                if n_swings < 20:
                     score = -999.0
                 else:
                     # 強烈偏好 75% 以上勝率，給予大幅權重加成
