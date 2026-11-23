@@ -3004,7 +3004,7 @@ def optimize_thresholds_fixed_days(
                     score = -999.0
                 else:
                     # 強烈偏好 75% 以上勝率，給予大幅權重加成
-                    win_weight = 2.0 if swing_win_rate >= 80.0 else 1.0
+                    win_weight = 2.0 if swing_win_rate >= 85.0 else 1.0
                     score = (swing_win_rate * win_weight) + (total_net * 0.1)
 
                 raw_score_matrix.loc[bull, bear] = score
