@@ -24,7 +24,7 @@ import yfinance as yf
 # 頁面基本配置（採用寬螢幕與暗色系量化終端風格）
 # -----------------------------------------------------------------------------
 st.set_page_config(
-    page_title="TAIEX 次日漲跌機率監控儀表板 (17因子-含近5日借券賣出餘額變動升級版)",
+    page_title="次日近月台指期漲跌機率監控儀表板v2026.11",
     page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -4307,7 +4307,7 @@ def export_720_days_to_excel_with_summary(
 # -----------------------------------------------------------------------------
 pipeline = MarketDataPipeline()
 
-st.sidebar.header("🕹️ 17因子特徵監控與波段留倉模擬器")
+st.sidebar.header("🕹️ 多因子特徵監控與波段留倉模擬器")
 
 auth_col1, auth_col2 = st.sidebar.columns([3, 2])
 with auth_col1:
