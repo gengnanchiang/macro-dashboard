@@ -5570,7 +5570,7 @@ st.markdown(
 # -----------------------------------------------------------------------------
 if not data["hist_df"].empty:
     current_user = st.session_state.get("current_user", "")
-    allowed_download_users = ["admin", "analyst01", "manager"]
+    allowed_download_users = ["admin", "ea"]
 
     if current_user in allowed_download_users:
         file_bytes, file_ext, mime_type = export_360_days_to_excel_with_summary(
