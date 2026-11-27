@@ -5570,7 +5570,13 @@ st.markdown(
 # -----------------------------------------------------------------------------
 if not data["hist_df"].empty:
     current_user = st.session_state.get("current_user", "")
-    allowed_download_users = ["admin", "ea"]
+    
+    # 讀取 Streamlit Secrets 中的下載白名單，並自動去除前後空白
+    perms = safe_get_secret("permissions", None)
+    if perms is not None and "excel_download_users" in perms:
+        allowed_download_users = [str(u).strip() for u in perms["excel_download_users"]]
+    else:
+        allowed_download_users = ["admin", "analyst01", "manager"]
 
     if current_user in allowed_download_users:
         file_bytes, file_ext, mime_type = export_360_days_to_excel_with_summary(
